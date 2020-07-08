@@ -3854,6 +3854,11 @@ ecc-jsbn@~0.1.1:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
 
+ecsy@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/ecsy/-/ecsy-0.3.1.tgz#db6025533de03c05b8a707959e719f396ec20aa8"
+  integrity sha512-KbNKb7Oxml4M/bCM8dkMedi8+LBdJuljNS7duaZWElg4k5qsubuLfAo9n9rXjBHpZTjie+KkKVm2Uw8v5Li/Qg==
+
 ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
