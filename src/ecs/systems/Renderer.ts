@@ -1,6 +1,6 @@
 import { System, World } from "ecsy";
 import Renderable from "../components/Renderable";
-import Position, { PositionProps } from "../components/Position";
+import Position from "../components/Position";
 
 interface Attributes {
   priority?: number;
@@ -17,7 +17,7 @@ class Renderer extends System {
 
   execute(delta: number, time: number): void {
     this.queries.renderables.results.forEach(entity => {
-      const { x, y } = entity.getComponent(Position) as unknown as PositionProps
+      const { x, y } = entity.getComponent(Position);
 
       this.drawCircle({x, y})
     })
