@@ -14,7 +14,7 @@ class Game {
     this.lastTime = performance.now()
     this.animationFrameRequest = null
     this.world = new World()
-      .registerSystem(Renderer)
+      .registerSystem(Renderer, { canvas })
       .registerComponent(Position)
       .registerComponent(Renderable)
   }
@@ -23,7 +23,7 @@ class Game {
     for (let i = 0; i < 10; i++) {
       this.world.createEntity()
         .addComponent(Position, {x: 50 * i, y: 50 * i})
-        .addComponent(Renderable, {canvas: this.canvas})
+        .addComponent(Renderable)
     }
     this.run();
   }

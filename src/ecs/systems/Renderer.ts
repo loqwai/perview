@@ -1,20 +1,30 @@
-import { System } from "ecsy";
-import Renderable, { RenderableProps } from "../components/Renderable";
+import { System, World } from "ecsy";
+import Renderable from "../components/Renderable";
 import Position, { PositionProps } from "../components/Position";
 
+interface Attributes {
+  priority?: number;
+  canvas: HTMLCanvasElement;
+}
+
 class Renderer extends System {
+  private canvas: HTMLCanvasElement;
+
+  constructor(world: World, { canvas, priority }: Attributes) {
+    super(world, { priority })
+    this.canvas = canvas
+  }
 
   execute(delta: number, time: number): void {
     this.queries.renderables.results.forEach(entity => {
-      const { canvas } = entity.getComponent(Renderable) as unknown as RenderableProps
       const { x, y } = entity.getComponent(Position) as unknown as PositionProps
 
-      this.drawCircle({canvas, x, y})
+      this.drawCircle({x, y})
     })
   }
 
-  drawCircle = ({canvas, x, y}: {canvas: HTMLCanvasElement, x: number, y: number}) => {
-    const ctx = canvas.getContext('2d')
+  drawCircle = ({x, y}: {x: number, y: number}) => {
+    const ctx = this.canvas.getContext('2d')
     if (!ctx) return
 
     ctx.fillStyle = "#888"
