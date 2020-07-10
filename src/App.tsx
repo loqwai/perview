@@ -11,10 +11,10 @@ const App = () => {
     if (!canvas) return;
 
     gameRef.current = new Game({canvas})
-    gameRef.current.run()
+    gameRef.current.start()
 
     return () => {
-      gameRef.current?.destroy()
+      gameRef.current?.stop()
       gameRef.current = null
     }
   }, [canvas])
@@ -25,8 +25,6 @@ const App = () => {
 
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
-
-      gameRef.current?.render();
     }
 
     handleResize()

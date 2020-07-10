@@ -1,34 +1,49 @@
+import { World } from 'ecsy'
+import Position from './components/Position'
+import Renderable from './components/Renderable'
+import Renderer from './systems/Renderer'
 
 class Game {
+  private world: World
   private canvas: HTMLCanvasElement
+  private lastTime: number
+  private animationFrameRequest: number | null
 
   constructor({canvas}: {canvas: HTMLCanvasElement}) {
     this.canvas = canvas
+    this.lastTime = performance.now()
+    this.animationFrameRequest = null
+    this.world = new World()
+      .registerSystem(Renderer)
+      .registerComponent(Position)
+      .registerComponent(Renderable)
   }
 
-  run =  () => {
-    this.render()
-  };
-
-  destroy = () => void 0;
-
-  render = () => {
-    for (let i = 1; i < 10; i++) {
-      this.drawCircle({x: 50 * i, y: 50 * i});
+  start = () => {
+    for (let i = 0; i < 10; i++) {
+      this.world.createEntity()
+        .addComponent(Position, {x: 50 * i, y: 50 * i})
+        .addComponent(Renderable, {canvas: this.canvas})
     }
+    this.run();
   }
 
-  drawCircle = ({x, y}: {x: number, y: number}) => {
-    const ctx = this.canvas.getContext('2d')
-    if (!ctx) return;
+  stop = () => {
+    if (!this.animationFrameRequest) return
 
-    ctx.fillStyle = "#888";
-    ctx.beginPath();
-    ctx.arc(x, y, 10, 0, 2 * Math.PI, false);
-    ctx.fill();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "#222";
-    ctx.stroke();    
+    cancelAnimationFrame(this.animationFrameRequest)
+  }
+
+  private run =  () => {
+     // Compute delta and elapsed time
+     const time = performance.now()
+     const delta = time - this.lastTime
+
+     // Run all the systems
+     this.world.execute(delta, time)
+
+     this.lastTime = time
+     this.animationFrameRequest = requestAnimationFrame(this.run)
   }
 }
 
