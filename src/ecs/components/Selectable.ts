@@ -6,6 +6,10 @@ export interface SelectableProps {
 
 class Selectable extends Component<SelectableProps> {
   selected: boolean = false
+
+  toggle = () => {
+    this.selected = !this.selected
+  }
 }
 
 Selectable.schema = {

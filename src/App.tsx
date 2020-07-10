@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
 
 import Game from './ecs/Game'
 import './App.css';
@@ -30,11 +30,15 @@ const App = () => {
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
-  })
+  }, [canvas])
+
+  const onMouseDown: MouseEventHandler<HTMLCanvasElement> = (e) => {
+    gameRef.current?.onMouseDown(e)
+  }
 
   return (
     <div className="App">
-      <canvas ref={setCanvas} />
+      <canvas ref={setCanvas} onMouseDown={onMouseDown}/>
     </div>
   );
 }

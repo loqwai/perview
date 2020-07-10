@@ -3,6 +3,7 @@ import Position from './components/Position'
 import Renderable from './components/Renderable'
 import Renderer from './systems/Renderer'
 import Selectable from './components/Selectable'
+import SelectionToggler from './systems/SelectionToggler'
 
 class Game {
   private world: World
@@ -16,6 +17,7 @@ class Game {
     this.animationFrameRequest = null
     this.world = new World()
       .registerSystem(Renderer, { canvas })
+      .registerSystem(SelectionToggler)
       .registerComponent(Position)
       .registerComponent(Selectable)
       .registerComponent(Renderable)
@@ -25,7 +27,7 @@ class Game {
     for (let i = 0; i < 10; i++) {
       this.world.createEntity()
         .addComponent(Position, {x: 50 * i, y: 50 * i})
-        .addComponent(Selectable, { selected: i % 3 === 0 })
+        .addComponent(Selectable)
         .addComponent(Renderable)
     }
     this.run();
@@ -35,6 +37,13 @@ class Game {
     if (!this.animationFrameRequest) return
 
     cancelAnimationFrame(this.animationFrameRequest)
+  }
+
+  onMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+    if (e.button !== 0) return;
+
+    const selectionToggler = this.world.getSystem(SelectionToggler) as SelectionToggler
+    selectionToggler.onMouseDown(e)
   }
 
   private run =  () => {

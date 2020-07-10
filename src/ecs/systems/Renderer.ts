@@ -25,7 +25,7 @@ class Renderer extends System {
     })
   }
 
-  drawCircle = ({x, y, selected}: {x: number, y: number, selected: boolean}) => {
+  private drawCircle = ({x, y, selected}: {x: number, y: number, selected: boolean}) => {
     const ctx = this.canvas.getContext('2d')
     if (!ctx) return
 
