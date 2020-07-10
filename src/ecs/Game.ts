@@ -2,6 +2,7 @@ import { World } from 'ecsy'
 import Position from './components/Position'
 import Renderable from './components/Renderable'
 import Renderer from './systems/Renderer'
+import Selectable from './components/Selectable'
 
 class Game {
   private world: World
@@ -16,6 +17,7 @@ class Game {
     this.world = new World()
       .registerSystem(Renderer, { canvas })
       .registerComponent(Position)
+      .registerComponent(Selectable)
       .registerComponent(Renderable)
   }
 
@@ -23,6 +25,7 @@ class Game {
     for (let i = 0; i < 10; i++) {
       this.world.createEntity()
         .addComponent(Position, {x: 50 * i, y: 50 * i})
+        .addComponent(Selectable, { selected: i % 3 === 0 })
         .addComponent(Renderable)
     }
     this.run();

@@ -1,6 +1,7 @@
 import { System, World } from "ecsy";
 import Renderable from "../components/Renderable";
 import Position from "../components/Position";
+import Selectable from "../components/Selectable";
 
 interface Attributes {
   priority?: number;
@@ -18,12 +19,13 @@ class Renderer extends System {
   execute(delta: number, time: number): void {
     this.queries.renderables.results.forEach(entity => {
       const { x, y } = entity.getComponent(Position);
+      const { selected } = entity.getComponent(Selectable) ?? { selected: false }
 
-      this.drawCircle({x, y})
+      this.drawCircle({x, y, selected})
     })
   }
 
-  drawCircle = ({x, y}: {x: number, y: number}) => {
+  drawCircle = ({x, y, selected}: {x: number, y: number, selected: boolean}) => {
     const ctx = this.canvas.getContext('2d')
     if (!ctx) return
 
@@ -32,7 +34,7 @@ class Renderer extends System {
     ctx.arc(x, y, 10, 0, 2 * Math.PI, false)
     ctx.fill()
     ctx.lineWidth = 1
-    ctx.strokeStyle = "#222"
+    ctx.strokeStyle = selected ? "#F22" : "#222"
     ctx.stroke()    
   }
 }

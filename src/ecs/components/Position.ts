@@ -6,8 +6,8 @@ interface PositionProps {
 }
 
 class Position extends Component<PositionProps> {
-  x = 0
-  y = 0
+  x: number = 0
+  y: number = 0
 }
 
 Position.schema = {

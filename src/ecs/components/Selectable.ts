@@ -5,12 +5,11 @@ export interface SelectableProps {
 }
 
 class Selectable extends Component<SelectableProps> {
-  selected = false
+  selected: boolean = false
 }
 
 Selectable.schema = {
-  x: { type: Types.Number },
-  y: { type: Types.Number },
+  selected: { type: Types.Boolean },
 }
 
 export default Selectable
