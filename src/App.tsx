@@ -33,12 +33,17 @@ const App = () => {
   }, [canvas])
 
   const onMouseDown: MouseEventHandler<HTMLCanvasElement> = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     gameRef.current?.onMouseDown(e)
   }
 
   return (
     <div className="App">
-      <canvas ref={setCanvas} onMouseDown={onMouseDown}/>
+      <canvas 
+        ref={setCanvas} 
+        onMouseDown={onMouseDown} 
+        onContextMenu={e => e.preventDefault()} />
     </div>
   );
 }

@@ -6,10 +6,12 @@ class SelectionToggler extends System {
   execute(_delta: number, _time: number): void {}
 
   onMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+    if (e.button !== 0) return;
+
     const {clientX, clientY} = e
 
     this.queries.selectables.results.forEach(entity => {
-      const {x, y} = entity.getComponent(Position)
+      const { x, y } = entity.getComponent(Position)
 
       const dX = x - clientX
       const dY = y - clientY

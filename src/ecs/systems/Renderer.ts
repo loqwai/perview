@@ -17,12 +17,20 @@ class Renderer extends System {
   }
 
   execute(delta: number, time: number): void {
+    this.clear()
     this.queries.renderables.results.forEach(entity => {
-      const { x, y } = entity.getComponent(Position);
+      const { x, y } = entity.getComponent(Position)
       const { selected } = entity.getComponent(Selectable) ?? { selected: false }
 
       this.drawCircle({x, y, selected})
     })
+  }
+
+  private clear = () => {
+    const ctx = this.canvas.getContext('2d')
+    if (!ctx) return
+
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
   private drawCircle = ({x, y, selected}: {x: number, y: number, selected: boolean}) => {
