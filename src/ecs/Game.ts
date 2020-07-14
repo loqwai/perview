@@ -1,6 +1,5 @@
 import { World } from 'ecsy'
 import Circle from './components/Circle'
-import Renderable from './components/Renderable'
 import Renderer from './systems/Renderer'
 import Selectable from './components/Selectable'
 import SelectionToggler from './systems/SelectionToggler'
@@ -27,7 +26,6 @@ class Game {
       .registerComponent(Circle)
       .registerComponent(Selectable)
       .registerComponent(Moveable)
-      .registerComponent(Renderable)
   }
 
   start = () => {
@@ -36,7 +34,6 @@ class Game {
         .addComponent(Circle, { position: new Vector2(50 * i, 50 * i), radius: 10 })
         .addComponent(Selectable)
         .addComponent(Moveable)
-        .addComponent(Renderable)
     }
     this.run();
   }

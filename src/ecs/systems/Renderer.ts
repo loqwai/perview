@@ -1,5 +1,4 @@
-import { System, World } from "ecsy";
-import Renderable from "../components/Renderable";
+import { System, World, Entity } from "ecsy";
 import Circle from "../components/Circle";
 import Selectable from "../components/Selectable";
 
@@ -10,46 +9,42 @@ interface Attributes {
 
 class Renderer extends System {
   private canvas: HTMLCanvasElement;
+  private ctx: CanvasRenderingContext2D | null;
 
   constructor(world: World, { canvas, priority }: Attributes) {
     super(world, { priority })
     this.canvas = canvas
+    this.ctx = this.canvas.getContext('2d')
   }
 
   execute(delta: number, time: number): void {
     this.clear()
-    this.queries.renderables.results.forEach(entity => {
-      const { position } = entity.getComponent(Circle)
-      const { selected } = entity.getComponent(Selectable) ?? { selected: false }
-      const { x, y } = position
-
-      this.drawCircle({x, y, selected})
-    })
+    this.queries.circles.results.forEach(this.drawCircle)
   }
 
   private clear = () => {
-    const ctx = this.canvas.getContext('2d')
-    if (!ctx) return
-
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  private drawCircle = ({x, y, selected}: {x: number, y: number, selected: boolean}) => {
-    const ctx = this.canvas.getContext('2d')
-    if (!ctx) return
+  private drawCircle = (entity: Entity) => {
+    if (!this.ctx) return
 
-    ctx.fillStyle = "#888"
-    ctx.beginPath()
-    ctx.arc(x, y, 10, 0, 2 * Math.PI, false)
-    ctx.fill()
-    ctx.lineWidth = 1
-    ctx.strokeStyle = selected ? "#F22" : "#222"
-    ctx.stroke()    
+    const { position, radius } = entity.getComponent(Circle)
+    const { selected } = entity.getComponent(Selectable)
+    const { x, y } = position
+
+    this.ctx.fillStyle = "#888"
+    this.ctx.beginPath()
+    this.ctx.arc(x, y, radius, 0, 2 * Math.PI, false)
+    this.ctx.fill()
+    this.ctx.lineWidth = 1
+    this.ctx.strokeStyle = selected ? "#F22" : "#222"
+    this.ctx.stroke()    
   }
 }
 
 Renderer.queries = {
-  renderables: { components: [Renderable, Circle] }
+  circles: { components: [Circle, Selectable] }
 }
 
 export default Renderer

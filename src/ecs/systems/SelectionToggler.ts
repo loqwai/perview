@@ -10,19 +10,22 @@ class SelectionToggler extends System {
     if (e.button !== 0) return;
 
     const clickPosition = { x: e.clientX, y: e.clientY }
+    this.toggleCircles(clickPosition)
+  };
 
-    this.queries.selectables.results.forEach(entity => {
-      const { position } = entity.getComponent(Circle)
+  toggleCircles = (clickPosition: { x: number, y: number }) => {
+    this.queries.circles.results.forEach(entity => {
+      const { position, radius } = entity.getComponent(Circle)
 
-      if (positionsAreClose(clickPosition, position, 10)) {
+      if (positionsAreClose(clickPosition, position, radius)) {
         entity.getMutableComponent(Selectable).toggle()
       }
     })
-  };
+  }
 }
 
 SelectionToggler.queries = {
-  selectables: { components: [Selectable, Circle] }
+  circles: { components: [Selectable, Circle] }
 }
 
 export default SelectionToggler
