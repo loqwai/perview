@@ -2,6 +2,7 @@ import { System, World, Entity } from "ecsy";
 import Circle from "../components/Circle";
 import Selectable from "../components/Selectable";
 import RectangleSelection from "../components/RectangleSelection";
+import positionsAreClose from "../utils/positionsAreClose";
 
 interface Attributes {
   priority?: number;
@@ -40,7 +41,7 @@ class Renderer extends System {
     ctx.beginPath()
     ctx.arc(x, y, radius, 0, 2 * Math.PI, false)
     ctx.fill()
-    ctx.lineWidth = 1
+    ctx.lineWidth = 2
     ctx.strokeStyle = selected ? "#F22" : "#222"
     ctx.stroke()    
   }
@@ -51,12 +52,14 @@ class Renderer extends System {
     const ctx = this.ctx
     const { startPosition, endPosition } = entity.getComponent(RectangleSelection)
 
+    if (positionsAreClose(startPosition, endPosition, 5)) return;
+
     const { x, y } = startPosition
     const w = endPosition.x - x
     const h = endPosition.y - y
 
     ctx.lineWidth = 1
-    ctx.strokeStyle = "#2F2";
+    ctx.strokeStyle = "#F22";
     ctx.strokeRect(x, y, w, h)
   }
 }

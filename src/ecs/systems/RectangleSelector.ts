@@ -3,6 +3,7 @@ import Selectable from "../components/Selectable";
 import Circle from "../components/Circle";
 import Vector2 from "../types/Vector2";
 import RectangleSelection from "../components/RectangleSelection";
+import positionsAreClose from "../utils/positionsAreClose";
 
 class RectangleSelector extends System {
   execute(_delta: number, _time: number): void { }
@@ -37,8 +38,10 @@ class RectangleSelector extends System {
     this.queries.rectangleSelections.results.forEach(entity => {
       const { startPosition, endPosition } = entity.getComponent(RectangleSelection)
       entity.remove();
+      if (positionsAreClose(startPosition, endPosition, 5)) return;
 
       this.queries.circles.results.forEach(circleEntity => {
+        const selectable = circleEntity.getMutableComponent(Selectable)
         const { position } = circleEntity.getComponent(Circle);
         const { x, y } = position
 
@@ -48,9 +51,7 @@ class RectangleSelector extends System {
         const withinY = (startPosition.y < y && y < endPosition.y)
                     || (endPosition.y < y && y < startPosition.y)
 
-        if (withinX && withinY) {
-          circleEntity.getMutableComponent(Selectable).selected = true
-        }
+        selectable.selected = (withinX && withinY)
       })
     })
   }
