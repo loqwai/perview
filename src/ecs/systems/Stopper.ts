@@ -17,7 +17,7 @@ class Stopper extends System {
 
       const otherPosition = other.getComponent(Position)
 
-      if (positionsAreClose(position, otherPosition, 10)) {
+      if (positionsAreClose(position, otherPosition, 20)) {
         entity.getMutableComponent(Moveable).hasDestination = false
       }
     })
