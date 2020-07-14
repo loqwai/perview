@@ -4,7 +4,7 @@ import Renderable from './components/Renderable'
 import Renderer from './systems/Renderer'
 import Selectable from './components/Selectable'
 import SelectionToggler from './systems/SelectionToggler'
-import MoveCommander from './systems/MoveCommander'
+import Mover from './systems/Mover'
 import Moveable from './components/Moveable'
 import Stopper from './systems/Stopper'
 
@@ -21,7 +21,7 @@ class Game {
     this.world = new World()
       .registerSystem(Renderer, { canvas })
       .registerSystem(SelectionToggler)
-      .registerSystem(MoveCommander)
+      .registerSystem(Mover)
       .registerSystem(Stopper)
       .registerComponent(Position)
       .registerComponent(Selectable)
@@ -47,7 +47,7 @@ class Game {
   }
 
   onMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    const moveCommander = this.world.getSystem(MoveCommander) as MoveCommander
+    const moveCommander = this.world.getSystem(Mover) as Mover
     const selectionToggler = this.world.getSystem(SelectionToggler) as SelectionToggler
 
     moveCommander.onMouseDown(e)

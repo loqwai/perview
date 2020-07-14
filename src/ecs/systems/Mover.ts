@@ -13,7 +13,7 @@ const unitVector = ({ x, y }: { x: number, y: number }) => {
   }
 }
 
-class MoveCommander extends System {
+class Mover extends System {
   execute(delta: number, _time: number): void {
     this.withDestination().forEach(entity => {
       const position = entity.getMutableComponent(Position)
@@ -64,9 +64,9 @@ class MoveCommander extends System {
   }
 }
 
-MoveCommander.queries = {
+Mover.queries = {
   moveables: { components: [ Moveable, Position ] },
   selectables: { components: [ Moveable, Selectable ] },
 }
 
-export default MoveCommander
+export default Mover
