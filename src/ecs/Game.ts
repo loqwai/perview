@@ -2,7 +2,7 @@ import { World } from 'ecsy'
 import Circle from './components/Circle'
 import Renderer from './systems/Renderer'
 import Selectable from './components/Selectable'
-import SelectionToggler from './systems/SelectionToggler'
+import Selector from './systems/Selector'
 import Mover from './systems/Mover'
 import Moveable from './components/Moveable'
 import Stopper from './systems/Stopper'
@@ -22,7 +22,7 @@ class Game {
     this.animationFrameRequest = null
     this.world = new World()
       .registerSystem(Renderer, { canvas })
-      .registerSystem(SelectionToggler)
+      .registerSystem(Selector)
       .registerSystem(RectangleSelector)
       .registerSystem(Mover)
       .registerSystem(Stopper)
@@ -49,12 +49,12 @@ class Game {
   }
 
   onMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    const moveCommander = this.world.getSystem(Mover) as Mover
-    const selectionToggler = this.world.getSystem(SelectionToggler) as SelectionToggler
+    const mover = this.world.getSystem(Mover) as Mover
+    const selector = this.world.getSystem(Selector) as Selector
     const rectangleSelector = this.world.getSystem(RectangleSelector) as RectangleSelector
 
-    moveCommander.onMouseDown(e)
-    selectionToggler.onMouseDown(e)
+    mover.onMouseDown(e)
+    selector.onMouseDown(e)
     rectangleSelector.onMouseDown(e)
   }
 

@@ -3,7 +3,7 @@ import Circle from "../components/Circle";
 import Selectable from "../components/Selectable";
 import positionsAreClose from "../utils/positionsAreClose";
 
-class SelectionToggler extends System {
+class Selector extends System {
   execute(_delta: number, _time: number): void {}
 
   onMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
@@ -37,8 +37,8 @@ class SelectionToggler extends System {
   }
 }
 
-SelectionToggler.queries = {
+Selector.queries = {
   circles: { components: [Selectable, Circle] }
 }
 
-export default SelectionToggler
+export default Selector
