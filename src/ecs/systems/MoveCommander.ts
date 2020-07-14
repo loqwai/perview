@@ -2,6 +2,7 @@ import { System } from "ecsy";
 import Moveable from "../components/Moveable";
 import Position from "../components/Position";
 import Selectable from "../components/Selectable";
+import positionsAreClose from "../utils/positionsAreClose";
 
 const unitVector = ({ x, y }: { x: number, y: number }) => {
   const r = Math.sqrt(x*x + y*y)
@@ -18,9 +19,11 @@ class MoveCommander extends System {
       const position = entity.getMutableComponent(Position)
       const { destinationX, destinationY, speed } = entity.getComponent(Moveable)
 
+      const destination = { x: destinationX, y: destinationY }
+
       const vector = unitVector({
-        x: destinationX - position.x,
-        y: destinationY - position.y,
+        x: destination.x - position.x,
+        y: destination.y - position.y,
       })
 
       const mX = vector.x * (delta * speed / 1000)
@@ -29,10 +32,7 @@ class MoveCommander extends System {
       position.x += mX
       position.y += mY
 
-      const dX = position.x - destinationX
-      const dY = position.y - destinationY
-      const distance = Math.sqrt( (dX*dX) + (dY*dY) )
-      if (distance <= 1) {
+      if (positionsAreClose(position, destination, 1)) {
         entity.getMutableComponent(Moveable).hasDestination = false
       }
     })

@@ -6,6 +6,7 @@ import Selectable from './components/Selectable'
 import SelectionToggler from './systems/SelectionToggler'
 import MoveCommander from './systems/MoveCommander'
 import Moveable from './components/Moveable'
+import Stopper from './systems/Stopper'
 
 class Game {
   private world: World
@@ -21,6 +22,7 @@ class Game {
       .registerSystem(Renderer, { canvas })
       .registerSystem(SelectionToggler)
       .registerSystem(MoveCommander)
+      .registerSystem(Stopper)
       .registerComponent(Position)
       .registerComponent(Selectable)
       .registerComponent(Moveable)
