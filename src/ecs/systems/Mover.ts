@@ -1,6 +1,6 @@
 import { System } from "ecsy";
 import Moveable from "../components/Moveable";
-import Position from "../components/Position";
+import Circle from "../components/Circle";
 import Selectable from "../components/Selectable";
 import positionsAreClose from "../utils/positionsAreClose";
 
@@ -16,7 +16,7 @@ const unitVector = ({ x, y }: { x: number, y: number }) => {
 class Mover extends System {
   execute(delta: number, _time: number): void {
     this.withDestination().forEach(entity => {
-      const position = entity.getMutableComponent(Position)
+      const { position } = entity.getMutableComponent(Circle)
       const { destination, speed } = entity.getComponent(Moveable)
 
       const vector = unitVector({
@@ -62,7 +62,7 @@ class Mover extends System {
 }
 
 Mover.queries = {
-  moveables: { components: [ Moveable, Position ] },
+  moveables: { components: [ Moveable, Circle ] },
   selectables: { components: [ Moveable, Selectable ] },
 }
 

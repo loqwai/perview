@@ -1,5 +1,5 @@
 import { World } from 'ecsy'
-import Position from './components/Position'
+import Circle from './components/Circle'
 import Renderable from './components/Renderable'
 import Renderer from './systems/Renderer'
 import Selectable from './components/Selectable'
@@ -7,6 +7,7 @@ import SelectionToggler from './systems/SelectionToggler'
 import Mover from './systems/Mover'
 import Moveable from './components/Moveable'
 import Stopper from './systems/Stopper'
+import Vector2 from './types/Vector2'
 
 class Game {
   private world: World
@@ -23,7 +24,7 @@ class Game {
       .registerSystem(SelectionToggler)
       .registerSystem(Mover)
       .registerSystem(Stopper)
-      .registerComponent(Position)
+      .registerComponent(Circle)
       .registerComponent(Selectable)
       .registerComponent(Moveable)
       .registerComponent(Renderable)
@@ -32,7 +33,7 @@ class Game {
   start = () => {
     for (let i = 0; i < 10; i++) {
       this.world.createEntity()
-        .addComponent(Position, { x: 50 * i, y: 50 * i })
+        .addComponent(Circle, { position: new Vector2(50 * i, 50 * i), radius: 10 })
         .addComponent(Selectable)
         .addComponent(Moveable)
         .addComponent(Renderable)

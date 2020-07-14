@@ -1,6 +1,7 @@
 import { System } from "ecsy";
-import Position from "../components/Position";
+import Circle from "../components/Circle";
 import Selectable from "../components/Selectable";
+import positionsAreClose from "../utils/positionsAreClose";
 
 class SelectionToggler extends System {
   execute(_delta: number, _time: number): void {}
@@ -8,25 +9,20 @@ class SelectionToggler extends System {
   onMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     if (e.button !== 0) return;
 
-    const {clientX, clientY} = e
+    const clickPosition = { x: e.clientX, y: e.clientY }
 
     this.queries.selectables.results.forEach(entity => {
-      const { x, y } = entity.getComponent(Position)
+      const { position } = entity.getComponent(Circle)
 
-      const dX = x - clientX
-      const dY = y - clientY
-
-      const distance = Math.sqrt( (dX*dX) + (dY*dY) )
-      if (distance <= 10) {
+      if (positionsAreClose(clickPosition, position, 10)) {
         entity.getMutableComponent(Selectable).toggle()
       }
     })
   };
-
 }
 
 SelectionToggler.queries = {
-  selectables: { components: [Selectable, Position] }
+  selectables: { components: [Selectable, Circle] }
 }
 
 export default SelectionToggler

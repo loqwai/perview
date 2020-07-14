@@ -1,5 +1,5 @@
 import { Component, Types } from "ecsy";
-import PointType from "../types/PointType";
+import { Vector2Type } from "../types/Vector2";
 
 interface Point {
   x: number;
@@ -20,7 +20,7 @@ class Moveable extends Component<Props> {
 
 Moveable.schema = {
   hasDestination: { type: Types.Boolean },
-  destination: { type: PointType, },
+  destination: { type: Vector2Type, },
   speed: { type: Types.Number, },
 }
 

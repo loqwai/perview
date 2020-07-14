@@ -1,6 +1,6 @@
 import { System, World } from "ecsy";
 import Renderable from "../components/Renderable";
-import Position from "../components/Position";
+import Circle from "../components/Circle";
 import Selectable from "../components/Selectable";
 
 interface Attributes {
@@ -19,8 +19,9 @@ class Renderer extends System {
   execute(delta: number, time: number): void {
     this.clear()
     this.queries.renderables.results.forEach(entity => {
-      const { x, y } = entity.getComponent(Position)
+      const { position } = entity.getComponent(Circle)
       const { selected } = entity.getComponent(Selectable) ?? { selected: false }
+      const { x, y } = position
 
       this.drawCircle({x, y, selected})
     })
@@ -48,7 +49,7 @@ class Renderer extends System {
 }
 
 Renderer.queries = {
-  renderables: { components: [Renderable, Position] }
+  renderables: { components: [Renderable, Circle] }
 }
 
 export default Renderer
