@@ -32,7 +32,7 @@ class Game {
   start = () => {
     for (let i = 0; i < 10; i++) {
       this.world.createEntity()
-        .addComponent(Position, {x: 50 * i, y: 50 * i})
+        .addComponent(Position, { x: 50 * i, y: 50 * i })
         .addComponent(Selectable)
         .addComponent(Moveable)
         .addComponent(Renderable)

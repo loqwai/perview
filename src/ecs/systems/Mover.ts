@@ -17,9 +17,7 @@ class Mover extends System {
   execute(delta: number, _time: number): void {
     this.withDestination().forEach(entity => {
       const position = entity.getMutableComponent(Position)
-      const { destinationX, destinationY, speed } = entity.getComponent(Moveable)
-
-      const destination = { x: destinationX, y: destinationY }
+      const { destination, speed } = entity.getComponent(Moveable)
 
       const vector = unitVector({
         x: destination.x - position.x,
@@ -46,8 +44,7 @@ class Mover extends System {
     this.selected().forEach(entity => {
       const moveable = entity.getMutableComponent(Moveable)
       moveable.hasDestination = true
-      moveable.destinationX = clientX
-      moveable.destinationY = clientY
+      moveable.destination = { x: clientX, y: clientY }
     });
   }
 

@@ -1,11 +1,11 @@
 import { Component, Types } from "ecsy";
 
-interface PositionProps {
-  x: number,
-  y: number,
+interface Props {
+  x: number;
+  y: number;
 }
 
-class Position extends Component<PositionProps> {
+class Position extends Component<Props> {
   x: number = 0
   y: number = 0
 }

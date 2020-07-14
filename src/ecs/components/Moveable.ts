@@ -1,23 +1,26 @@
 import { Component, Types } from "ecsy";
+import PointType from "../types/PointType";
 
-interface MoveableProps {
+interface Point {
+  x: number;
+  y: number;
+}
+
+interface Props {
   hasDestination: boolean;
-  destinationX: number;
-  destinationY: number;
+  destination: Point;
   speed: number;
 }
 
-class Moveable extends Component<MoveableProps> {
+class Moveable extends Component<Props> {
   hasDestination = false
-  destinationX = 0
-  destinationY = 0
+  destination: Point = { x: 0, y: 0 }
   speed = 100
 }
 
 Moveable.schema = {
   hasDestination: { type: Types.Boolean },
-  destinationX: { type: Types.Number, },
-  destinationY: { type: Types.Number, },
+  destination: { type: PointType, },
   speed: { type: Types.Number, },
 }
 
