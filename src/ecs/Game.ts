@@ -7,6 +7,8 @@ import Mover from './systems/Mover'
 import Moveable from './components/Moveable'
 import Stopper from './systems/Stopper'
 import Vector2 from './types/Vector2'
+import RectangleSelection from './components/RectangleSelection'
+import RectangleSelector from './systems/RectangleSelector'
 
 class Game {
   private world: World
@@ -21,11 +23,13 @@ class Game {
     this.world = new World()
       .registerSystem(Renderer, { canvas })
       .registerSystem(SelectionToggler)
+      .registerSystem(RectangleSelector)
       .registerSystem(Mover)
       .registerSystem(Stopper)
       .registerComponent(Circle)
       .registerComponent(Selectable)
       .registerComponent(Moveable)
+      .registerComponent(RectangleSelection)
   }
 
   start = () => {
@@ -47,9 +51,21 @@ class Game {
   onMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     const moveCommander = this.world.getSystem(Mover) as Mover
     const selectionToggler = this.world.getSystem(SelectionToggler) as SelectionToggler
+    const rectangleSelector = this.world.getSystem(RectangleSelector) as RectangleSelector
 
     moveCommander.onMouseDown(e)
     selectionToggler.onMouseDown(e)
+    rectangleSelector.onMouseDown(e)
+  }
+
+  onMouseMove = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+    const rectangleSelector = this.world.getSystem(RectangleSelector) as RectangleSelector
+    rectangleSelector.onMouseMove(e)
+  }
+
+  onMouseUp = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+    const rectangleSelector = this.world.getSystem(RectangleSelector) as RectangleSelector
+    rectangleSelector.onMouseUp(e)
   }
 
   private run =  () => {

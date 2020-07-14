@@ -38,11 +38,21 @@ const App = () => {
     gameRef.current?.onMouseDown(e)
   }
 
+  const onMouseMove: MouseEventHandler<HTMLCanvasElement> = (e) => {
+    gameRef.current?.onMouseMove(e)
+  }
+
+  const onMouseUp: MouseEventHandler<HTMLCanvasElement> = (e) => {
+    gameRef.current?.onMouseUp(e)
+  }
+
   return (
     <div className="App">
       <canvas 
         ref={setCanvas} 
         onMouseDown={onMouseDown} 
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
         onContextMenu={e => e.preventDefault()} />
     </div>
   );

@@ -1,20 +1,16 @@
 import { Component, Types } from "ecsy";
-import { Vector2Type } from "../types/Vector2";
+import Vector2, { Vector2Type } from "../types/Vector2";
 
-interface Point {
-  x: number;
-  y: number;
-}
 
 interface Props {
   hasDestination: boolean;
-  destination: Point;
+  destination: Vector2;
   speed: number;
 }
 
 class Moveable extends Component<Props> {
   hasDestination = false
-  destination: Point = { x: 0, y: 0 }
+  destination: Vector2 = new Vector2()
   speed = 100
 }
 

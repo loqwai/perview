@@ -44,7 +44,7 @@ class Mover extends System {
     this.selected().forEach(entity => {
       const moveable = entity.getMutableComponent(Moveable)
       moveable.hasDestination = true
-      moveable.destination = { x: clientX, y: clientY }
+      moveable.destination.set(clientX, clientY)
     });
   }
 
