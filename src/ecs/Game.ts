@@ -42,16 +42,31 @@ class Game {
 
   start = () => {
     for (let i = 0; i < 10; i++) {
-      this.createFriendly(50 * i, 50 * i)
+      this.createFriendly(50 + 50 * i, 500)
+      this.createEnemy(50 + 50 * i, 100)
     }
     this.run();
   }
 
+  createEnemy = (x: number, y: number) => {
+    const radius = 10;
+    const color = colors.enemy
+    const position = new Vector2(x, y)
+
+    this.world.createEntity()
+      .addComponent(Circle, { radius, color, position })
+      .addComponent(Moveable)
+  }
+
   createFriendly = (x: number, y: number) => {
-      this.world.createEntity()
-        .addComponent(Circle, { radius: 10, color: colors.friendly, position: new Vector2(x, y) })
-        .addComponent(Selectable)
-        .addComponent(Moveable)
+    const radius = 10;
+    const color = colors.friendly
+    const position = new Vector2(x, y)
+
+    this.world.createEntity()
+      .addComponent(Circle, { radius, color, position })
+      .addComponent(Selectable)
+      .addComponent(Moveable)
   }
 
   stop = () => {

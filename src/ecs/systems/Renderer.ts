@@ -45,7 +45,7 @@ class Renderer extends System {
 
     const ctx = this.ctx
     const { color, radius, position } = entity.getComponent(Circle)
-    const { selected } = entity.getComponent(Selectable)
+    const selected = entity.getComponent(Selectable)?.selected ?? false
     const { x, y } = position
 
     ctx.fillStyle = color
@@ -59,7 +59,7 @@ class Renderer extends System {
     if (selected) {
       ctx.beginPath()
       ctx.arc(x, y, radius + 2, 0, 2 * Math.PI, false)
-      ctx.lineWidth = 1
+      ctx.lineWidth = 2
       ctx.strokeStyle = this.colors.selection
       ctx.stroke()    
     }
@@ -77,14 +77,14 @@ class Renderer extends System {
     const w = endPosition.x - x
     const h = endPosition.y - y
 
-    ctx.lineWidth = 1
+    ctx.lineWidth = 2
     ctx.strokeStyle = this.colors.selection;
     ctx.strokeRect(x, y, w, h)
   }
 }
 
 Renderer.queries = {
-  circles: { components: [Circle, Selectable] },
+  circles: { components: [Circle] },
   rectangleSelections: { components: [RectangleSelection] },
 }
 
