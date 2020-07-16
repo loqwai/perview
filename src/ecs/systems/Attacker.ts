@@ -8,6 +8,7 @@ import unitVector from "../utils/unitVector";
 import Vector2 from "../types/Vector2";
 import Moveable from "../components/Moveable";
 import distanceBetween from "../utils/distanceBetween";
+import DestroyedOnImpact from "../components/DestroyedOnImpact";
 
 class Attacker extends System {
   execute(_delta: number, time: number): void {
@@ -44,19 +45,20 @@ class Attacker extends System {
     const { radius, position } = attacker.getComponent(Circle)
     const { position: targetPosition } = target.getComponent(Circle)
 
-    const vector = unitVector({
+    const direction = unitVector({
       x: targetPosition.x - position.x,
       y: targetPosition.y - position.y,
     })
 
     const spawnPosition = new Vector2(
-      position.x + (vector.x * (radius + 3)),
-      position.y + (vector.y * (radius + 3)),
+      position.x + (direction.x * (radius + 3)),
+      position.y + (direction.y * (radius + 3)),
     )
 
     this.world.createEntity()
       .addComponent(Circle, { color: attack.projectileColor, radius: 2, position: spawnPosition })
-      .addComponent(Moveable, { speed: attack.projectileSpeed, hasDestination: true, destination: targetPosition })
+      .addComponent(DestroyedOnImpact)
+      .addComponent(Moveable, { speed: attack.projectileSpeed, direction })
   }
 }
 

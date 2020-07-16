@@ -2,7 +2,11 @@ import { World } from 'ecsy'
 
 import Vector2 from './types/Vector2'
 
+import Attack from './components/Attack'
 import Circle from './components/Circle'
+import Collidable from './components/Collidable'
+import Destination from './components/Destination'
+import DestroyedOnImpact from './components/DestroyedOnImpact'
 import Moveable from './components/Moveable'
 import RectangleSelection from './components/RectangleSelection'
 import Selectable from './components/Selectable'
@@ -14,7 +18,6 @@ import RectangleSelector from './systems/RectangleSelector'
 import Renderer from './systems/Renderer'
 import Selector from './systems/Selector'
 import Stopper from './systems/Stopper'
-import Attack from './components/Attack'
 
 const colors = {
   friendly: '#59cd90',
@@ -43,6 +46,9 @@ class Game {
       .registerSystem(Stopper)
       .registerComponent(Attack)
       .registerComponent(Circle)
+      .registerComponent(Collidable)
+      .registerComponent(Destination)
+      .registerComponent(DestroyedOnImpact)
       .registerComponent(Moveable)
       .registerComponent(RectangleSelection)
       .registerComponent(Selectable)
@@ -71,7 +77,7 @@ class Game {
     this.world.createEntity()
       .addComponent(Attack, { projectileColor, projectileSpeed, projectileLifetime, minimumRefactoryPeriod })
       .addComponent(Circle, { radius, color, position })
-      .addComponent(Moveable)
+      .addComponent(Collidable)
       .addComponent(Team, { name: teamName })
   }
 
@@ -90,6 +96,7 @@ class Game {
     this.world.createEntity()
       .addComponent(Attack, { projectileColor, projectileSpeed, projectileLifetime, minimumRefactoryPeriod })
       .addComponent(Circle, { radius, color, position })
+      .addComponent(Collidable)
       .addComponent(Moveable, { speed })
       .addComponent(Selectable)
       .addComponent(Team, { name: teamName })
