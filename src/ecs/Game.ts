@@ -10,6 +10,14 @@ import Vector2 from './types/Vector2'
 import RectangleSelection from './components/RectangleSelection'
 import RectangleSelector from './systems/RectangleSelector'
 
+const colors = {
+  friendly: '#59cd90',
+  enemy: '#c73e1d',
+  projectile: '#ffe74c',
+  background: '#545e75',
+  selection: '#57b8ff',
+}
+
 class Game {
   private world: World
   private canvas: HTMLCanvasElement
@@ -21,7 +29,7 @@ class Game {
     this.lastTime = performance.now()
     this.animationFrameRequest = null
     this.world = new World()
-      .registerSystem(Renderer, { canvas })
+      .registerSystem(Renderer, { canvas, colors })
       .registerSystem(Selector)
       .registerSystem(RectangleSelector)
       .registerSystem(Mover)
@@ -34,12 +42,16 @@ class Game {
 
   start = () => {
     for (let i = 0; i < 10; i++) {
-      this.world.createEntity()
-        .addComponent(Circle, { position: new Vector2(50 * i, 50 * i), radius: 10 })
-        .addComponent(Selectable)
-        .addComponent(Moveable)
+      this.createFriendly(50 * i, 50 * i)
     }
     this.run();
+  }
+
+  createFriendly = (x: number, y: number) => {
+      this.world.createEntity()
+        .addComponent(Circle, { radius: 10, color: colors.friendly, position: new Vector2(x, y) })
+        .addComponent(Selectable)
+        .addComponent(Moveable)
   }
 
   stop = () => {
