@@ -9,14 +9,15 @@ class Stopper extends System {
   }
 
   private stopIfColliding = (entity: Entity) => {
-    const { position } = entity.getComponent(Circle)
+    const { radius, position } = entity.getComponent(Circle)
 
-    this.queries.moveables.results.forEach(other => {
-      if (entity === other) return;
+    this.queries.moveables.results.forEach(otherEntity => {
+      if (entity === otherEntity) return;
 
-      const otherPosition = other.getComponent(Circle).position
+      const other = otherEntity.getComponent(Circle)
+      const threshold = radius + other.radius
 
-      if (positionsAreClose(position, otherPosition, 20)) {
+      if (positionsAreClose(position, other.position, threshold)) {
         entity.getMutableComponent(Moveable).hasDestination = false
       }
     })
