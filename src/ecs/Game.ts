@@ -63,7 +63,13 @@ class Game {
     const color = colors.enemy
     const position = new Vector2(x, y)
 
+    const projectileColor = colors.projectile
+    const projectileSpeed = 100;
+    const projectileLifetime = 5000;
+    const minimumRefactoryPeriod = 1000;
+
     this.world.createEntity()
+      .addComponent(Attack, { projectileColor, projectileSpeed, projectileLifetime, minimumRefactoryPeriod })
       .addComponent(Circle, { radius, color, position })
       .addComponent(Moveable)
       .addComponent(Team, { name: teamName })
@@ -77,7 +83,7 @@ class Game {
     const position = new Vector2(x, y)
 
     const projectileColor = colors.projectile
-    const projectileSpeed = 500;
+    const projectileSpeed = 100;
     const projectileLifetime = 5000;
     const minimumRefactoryPeriod = 1000;
 
