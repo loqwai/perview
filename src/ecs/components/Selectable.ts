@@ -1,15 +1,7 @@
 import { Component, Types } from "ecsy";
 
-export interface SelectableProps {
-  selected: boolean;
-}
-
-class Selectable extends Component<SelectableProps> {
+class Selectable extends Component<Selectable> {
   selected: boolean = false
-
-  toggle = () => {
-    this.selected = !this.selected
-  }
 }
 
 Selectable.schema = {
