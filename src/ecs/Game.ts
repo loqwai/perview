@@ -1,14 +1,20 @@
 import { World } from 'ecsy'
-import Circle from './components/Circle'
-import Renderer from './systems/Renderer'
-import Selectable from './components/Selectable'
-import Selector from './systems/Selector'
-import Mover from './systems/Mover'
-import Moveable from './components/Moveable'
-import Stopper from './systems/Stopper'
+
 import Vector2 from './types/Vector2'
+
+import Circle from './components/Circle'
+import Moveable from './components/Moveable'
 import RectangleSelection from './components/RectangleSelection'
+import Selectable from './components/Selectable'
+import Team from './components/Team'
+
+import Attacker from './systems/Attacker'
+import Mover from './systems/Mover'
 import RectangleSelector from './systems/RectangleSelector'
+import Renderer from './systems/Renderer'
+import Selector from './systems/Selector'
+import Stopper from './systems/Stopper'
+import Attack from './components/Attack'
 
 const colors = {
   friendly: '#59cd90',
@@ -29,15 +35,18 @@ class Game {
     this.lastTime = performance.now()
     this.animationFrameRequest = null
     this.world = new World()
+      .registerSystem(Attacker)
+      .registerSystem(Mover)
+      .registerSystem(RectangleSelector)
       .registerSystem(Renderer, { canvas, colors })
       .registerSystem(Selector)
-      .registerSystem(RectangleSelector)
-      .registerSystem(Mover)
       .registerSystem(Stopper)
+      .registerComponent(Attack)
       .registerComponent(Circle)
-      .registerComponent(Selectable)
       .registerComponent(Moveable)
       .registerComponent(RectangleSelection)
+      .registerComponent(Selectable)
+      .registerComponent(Team)
   }
 
   start = () => {
@@ -49,6 +58,7 @@ class Game {
   }
 
   createEnemy = (x: number, y: number) => {
+    const teamName = "Enemy"
     const radius = 10;
     const color = colors.enemy
     const position = new Vector2(x, y)
@@ -56,17 +66,27 @@ class Game {
     this.world.createEntity()
       .addComponent(Circle, { radius, color, position })
       .addComponent(Moveable)
+      .addComponent(Team, { name: teamName })
   }
 
   createFriendly = (x: number, y: number) => {
-    const radius = 10;
+    const teamName = "Friendly"
     const color = colors.friendly
+    const radius = 10;
+    const speed = 100;
     const position = new Vector2(x, y)
 
+    const projectileColor = colors.projectile
+    const projectileSpeed = 500;
+    const projectileLifetime = 5000;
+    const minimumRefactoryPeriod = 1000;
+
     this.world.createEntity()
+      .addComponent(Attack, { projectileColor, projectileSpeed, projectileLifetime, minimumRefactoryPeriod })
       .addComponent(Circle, { radius, color, position })
+      .addComponent(Moveable, { speed })
       .addComponent(Selectable)
-      .addComponent(Moveable)
+      .addComponent(Team, { name: teamName })
   }
 
   stop = () => {

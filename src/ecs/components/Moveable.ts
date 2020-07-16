@@ -3,9 +3,9 @@ import Vector2, { Vector2Type } from "../types/Vector2";
 
 
 class Moveable extends Component<Moveable> {
-  hasDestination = false
+  hasDestination: boolean = false
   destination: Vector2 = new Vector2()
-  speed = 100
+  speed: number = 0
 }
 
 Moveable.schema = {

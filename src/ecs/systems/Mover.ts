@@ -3,15 +3,7 @@ import Moveable from "../components/Moveable";
 import Circle from "../components/Circle";
 import Selectable from "../components/Selectable";
 import positionsAreClose from "../utils/positionsAreClose";
-
-const unitVector = ({ x, y }: { x: number, y: number }) => {
-  const r = Math.sqrt(x*x + y*y)
-
-  return {
-    x: x / r,
-    y: y / r,
-  }
-}
+import unitVector from "../utils/unitVector";
 
 class Mover extends System {
   execute(delta: number, _time: number): void {
