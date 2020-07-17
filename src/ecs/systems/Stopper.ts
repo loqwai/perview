@@ -45,7 +45,7 @@ class Stopper extends System {
 
     if (R.isNil(other)) return
 
-    entity.getMutableComponent(Moveable).speed = 0
+    entity.getMutableComponent(Moveable).direction.set(0, 0)
 
     if (entity.hasComponent(DoesDamage) && other.hasComponent(Health)) {
       const { damage } = entity.getComponent(DoesDamage)

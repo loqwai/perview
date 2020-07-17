@@ -15,7 +15,7 @@ class Selector extends System {
   };
 
   selectCircles = (clickPosition: { x: number, y: number }) => {
-    let anySelected = false
+    this.deselectAllCircles()
 
     this.queries.circles.results.forEach(entity => {
       const { radius } = entity.getComponent(Circle)
@@ -23,11 +23,8 @@ class Selector extends System {
 
       if (positionsAreClose(clickPosition, position, radius)) {
         entity.getMutableComponent(Selectable).selected = true
-        anySelected = true
       }
     })
-
-    if (!anySelected) this.deselectAllCircles();
   }
 
   private deselectAllCircles = () => {
