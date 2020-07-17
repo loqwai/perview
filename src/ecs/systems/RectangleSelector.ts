@@ -10,6 +10,7 @@ class RectangleSelector extends System {
 
   onMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     if (e.button !== 0) return;
+    if (this.queries.rectangleSelections.results.length > 0) return;
 
     const startPosition = new Vector2(e.clientX, e.clientY)
     const endPosition = new Vector2(e.clientX, e.clientY)
