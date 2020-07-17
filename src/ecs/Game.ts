@@ -23,6 +23,7 @@ import EnforceLifespan from './systems/EnforceLifespan'
 import Health from './components/Health'
 import EnforceHealth from './systems/EnforceHealth'
 import DoesDamage from './components/DoesDamage'
+import Position from './components/Position'
 
 const colors = {
   friendly: '#59cd90',
@@ -60,13 +61,14 @@ class Game {
       .registerComponent(Health)
       .registerComponent(Lifespan)
       .registerComponent(Moveable)
+      .registerComponent(Position)
       .registerComponent(RectangleSelection)
       .registerComponent(Selectable)
       .registerComponent(Team)
   }
 
   start = () => {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 1; i++) {
       this.createFriendly(50 + 50 * i, 500)
       this.createEnemy(50 + 50 * i, 100)
     }
@@ -88,9 +90,10 @@ class Game {
 
     this.world.createEntity()
       .addComponent(Attack, { projectileColor, projectileSpeed, projectileLifetime, projectileDamage, minimumRefactoryPeriod })
-      .addComponent(Circle, { radius, color, position })
+      .addComponent(Circle, { radius, color })
       .addComponent(Collidable)
       .addComponent(Health, { health, maxHealth: health })
+      .addComponent(Position, { position })
       .addComponent(Team, { name: teamName })
   }
 
@@ -100,6 +103,7 @@ class Game {
     const radius = 10;
     const speed = 100;
     const health = 100;
+    const direction = new Vector2()
     const position = new Vector2(x, y)
 
     const projectileColor = colors.projectile
@@ -110,10 +114,11 @@ class Game {
 
     this.world.createEntity()
       .addComponent(Attack, { projectileColor, projectileSpeed, projectileLifetime, projectileDamage, minimumRefactoryPeriod })
-      .addComponent(Circle, { radius, color, position })
+      .addComponent(Circle, { radius, color })
       .addComponent(Collidable)
       .addComponent(Health, { health, maxHealth: health })
-      .addComponent(Moveable, { speed })
+      .addComponent(Moveable, { direction, speed })
+      .addComponent(Position, { position })
       .addComponent(Selectable)
       .addComponent(Team, { name: teamName })
   }

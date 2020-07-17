@@ -10,15 +10,18 @@ import Destination from "../components/Destination";
 import Collidable from "../components/Collidable";
 import DoesDamage from "../components/DoesDamage";
 import Health from "../components/Health";
+import Position from "../components/Position";
 
 const isCloseTo = R.curry((e1: Entity, e2: Entity) => {
   if (e1 === e2) return false;
 
   const c1 = e1.getComponent(Circle)
+  const p1 = e1.getComponent(Position)
   const c2 = e2.getComponent(Circle)
+  const p2 = e2.getComponent(Position)
   const threshold = c1.radius + c2.radius
 
-  return positionsAreClose(c1.position, c2.position, threshold)
+  return positionsAreClose(p1.position, p2.position, threshold)
 })
 
 class Stopper extends System {
@@ -28,11 +31,11 @@ class Stopper extends System {
   }
 
   private stopIfAtDestination = (entity: Entity) => {
-    const { position } = entity.getComponent(Circle)
+    const { position } = entity.getComponent(Position)
     const { position: destination } = entity.getComponent(Destination)
 
     if (positionsAreClose(position, destination, 1)) {
-      entity.getMutableComponent(Moveable).speed = 0
+      entity.getMutableComponent(Moveable).direction.set(0, 0)
       entity.removeComponent(Destination)
     }
   }
@@ -56,9 +59,9 @@ class Stopper extends System {
 }
 
 Stopper.queries = {
-  collideables: { components: [ Circle, Collidable ]},
-  moveables: { components: [ Circle, Moveable ] },
-  withDestination: { components: [ Circle, Destination, Moveable ] },
+  collideables: { components: [ Circle, Collidable, Position ]},
+  moveables: { components: [ Circle, Moveable, Position ] },
+  withDestination: { components: [ Destination, Moveable, Position ] },
 }
 
 export default Stopper

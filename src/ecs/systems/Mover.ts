@@ -1,17 +1,16 @@
 import { System } from "ecsy";
 
-import Circle from "../components/Circle";
+import Position from "../components/Position";
 import Moveable from "../components/Moveable";
 import Selectable from "../components/Selectable";
 
 import unitVector from "../utils/unitVector";
-import Vector2 from "../types/Vector2";
 import Destination from "../components/Destination";
 
 class Mover extends System {
   execute(delta: number, _time: number): void {
     this.queries.moveables.results.forEach(entity => {
-      const { position } = entity.getMutableComponent(Circle)
+      const { position } = entity.getMutableComponent(Position)
       const { direction, speed } = entity.getComponent(Moveable)
 
       const mX = direction.x * (delta * speed / 1000)
@@ -28,16 +27,18 @@ class Mover extends System {
     const {clientX, clientY} = e
 
     this.selected().forEach(entity => {
-      const { position } = entity.getComponent(Circle)
+      const { position } = entity.getComponent(Position)
 
       const vector = unitVector({
         x: clientX - position.x,
         y: clientY - position.y,
       })
 
-      entity.addComponent(Destination, { position: new Vector2(clientX, clientY) })
-      const moveable = entity.getMutableComponent(Moveable)
-      moveable.direction.set(vector.x, vector.y)
+      if (!entity.hasComponent(Destination)) {
+        entity.addComponent(Destination)
+      }
+      entity.getMutableComponent(Destination).position.set(clientX, clientY)
+      entity.getMutableComponent(Moveable).direction.set(vector.x, vector.y)
     });
   }
 
@@ -49,7 +50,7 @@ class Mover extends System {
 }
 
 Mover.queries = {
-  moveables: { components: [ Moveable, Circle ] },
+  moveables: { components: [ Moveable, Position ] },
   selectables: { components: [ Moveable, Selectable ] },
 }
 

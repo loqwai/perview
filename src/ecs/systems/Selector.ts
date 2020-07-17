@@ -2,6 +2,7 @@ import { System } from "ecsy";
 import Circle from "../components/Circle";
 import Selectable from "../components/Selectable";
 import positionsAreClose from "../utils/positionsAreClose";
+import Position from "../components/Position";
 
 class Selector extends System {
   execute(_delta: number, _time: number): void {}
@@ -17,7 +18,8 @@ class Selector extends System {
     let anySelected = false
 
     this.queries.circles.results.forEach(entity => {
-      const { position, radius } = entity.getComponent(Circle)
+      const { radius } = entity.getComponent(Circle)
+      const { position } = entity.getComponent(Position)
 
       if (positionsAreClose(clickPosition, position, radius)) {
         entity.getMutableComponent(Selectable).selected = true
@@ -38,7 +40,7 @@ class Selector extends System {
 }
 
 Selector.queries = {
-  circles: { components: [Selectable, Circle] }
+  circles: { components: [Circle, Position, Selectable] }
 }
 
 export default Selector

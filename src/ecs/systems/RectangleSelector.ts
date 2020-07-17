@@ -1,9 +1,9 @@
 import { System } from "ecsy";
 import Selectable from "../components/Selectable";
-import Circle from "../components/Circle";
 import Vector2 from "../types/Vector2";
 import RectangleSelection from "../components/RectangleSelection";
 import positionsAreClose from "../utils/positionsAreClose";
+import Position from "../components/Position";
 
 class RectangleSelector extends System {
   execute(_delta: number, _time: number): void { }
@@ -41,9 +41,9 @@ class RectangleSelector extends System {
       entity.remove();
       if (positionsAreClose(startPosition, endPosition, 5)) return;
 
-      this.queries.circles.results.forEach(circleEntity => {
-        const selectable = circleEntity.getMutableComponent(Selectable)
-        const { position } = circleEntity.getComponent(Circle);
+      this.queries.selectables.results.forEach(selectableEntity => {
+        const selectable = selectableEntity.getMutableComponent(Selectable)
+        const { position } = selectableEntity.getComponent(Position);
         const { x, y } = position
 
         const withinX = (startPosition.x < x && x < endPosition.x)
@@ -59,7 +59,7 @@ class RectangleSelector extends System {
 }
 
 RectangleSelector.queries = {
-  circles: { components: [Selectable, Circle] },
+  selectables: { components: [Position, Selectable] },
   rectangleSelections: { components: [RectangleSelection] },
 }
 

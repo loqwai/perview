@@ -3,6 +3,7 @@ import Circle from "../components/Circle";
 import Selectable from "../components/Selectable";
 import RectangleSelection from "../components/RectangleSelection";
 import positionsAreClose from "../utils/positionsAreClose";
+import Position from "../components/Position";
 
 interface Colors {
   background: string;
@@ -44,7 +45,8 @@ class Renderer extends System {
     if (!this.ctx) return
 
     const ctx = this.ctx
-    const { color, radius, position } = entity.getComponent(Circle)
+    const { color, radius } = entity.getComponent(Circle)
+    const { position } = entity.getComponent(Position)
     const selected = entity.getComponent(Selectable)?.selected ?? false
     const { x, y } = position
 
@@ -84,7 +86,7 @@ class Renderer extends System {
 }
 
 Renderer.queries = {
-  circles: { components: [Circle] },
+  circles: { components: [Circle, Position] },
   rectangleSelections: { components: [RectangleSelection] },
 }
 
