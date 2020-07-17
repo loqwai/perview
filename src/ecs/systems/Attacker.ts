@@ -10,6 +10,7 @@ import Moveable from "../components/Moveable";
 import distanceBetween from "../utils/distanceBetween";
 import DestroyedOnImpact from "../components/DestroyedOnImpact";
 import Lifespan from "../components/Lifespan";
+import DoesDamage from "../components/DoesDamage";
 
 class Attacker extends System {
   execute(_delta: number, time: number): void {
@@ -58,6 +59,7 @@ class Attacker extends System {
 
     this.world.createEntity()
       .addComponent(Circle, { color: attack.projectileColor, radius: 2, position: spawnPosition })
+      .addComponent(DoesDamage, { damage: attack.projectileDamage })
       .addComponent(DestroyedOnImpact)
       .addComponent(Moveable, { speed: attack.projectileSpeed, direction })
       .addComponent(Lifespan, { createdAt: time, ttl: attack.projectileLifetime })

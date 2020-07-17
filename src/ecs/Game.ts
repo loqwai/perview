@@ -20,6 +20,9 @@ import Renderer from './systems/Renderer'
 import Selector from './systems/Selector'
 import Stopper from './systems/Stopper'
 import EnforceLifespan from './systems/EnforceLifespan'
+import Health from './components/Health'
+import EnforceHealth from './systems/EnforceHealth'
+import DoesDamage from './components/DoesDamage'
 
 const colors = {
   friendly: '#59cd90',
@@ -42,6 +45,7 @@ class Game {
     this.world = new World()
       .registerSystem(Attacker)
       .registerSystem(EnforceLifespan)
+      .registerSystem(EnforceHealth)
       .registerSystem(Mover)
       .registerSystem(RectangleSelector)
       .registerSystem(Renderer, { canvas, colors })
@@ -52,6 +56,8 @@ class Game {
       .registerComponent(Collidable)
       .registerComponent(Destination)
       .registerComponent(DestroyedOnImpact)
+      .registerComponent(DoesDamage)
+      .registerComponent(Health)
       .registerComponent(Lifespan)
       .registerComponent(Moveable)
       .registerComponent(RectangleSelection)
@@ -72,16 +78,19 @@ class Game {
     const radius = 10;
     const color = colors.enemy
     const position = new Vector2(x, y)
+    const health = 100;
 
     const projectileColor = colors.projectile
     const projectileSpeed = 200;
     const projectileLifetime = 5000;
+    const projectileDamage = 10;
     const minimumRefactoryPeriod = 500;
 
     this.world.createEntity()
-      .addComponent(Attack, { projectileColor, projectileSpeed, projectileLifetime, minimumRefactoryPeriod })
+      .addComponent(Attack, { projectileColor, projectileSpeed, projectileLifetime, projectileDamage, minimumRefactoryPeriod })
       .addComponent(Circle, { radius, color, position })
       .addComponent(Collidable)
+      .addComponent(Health, { health, maxHealth: health })
       .addComponent(Team, { name: teamName })
   }
 
@@ -90,17 +99,20 @@ class Game {
     const color = colors.friendly
     const radius = 10;
     const speed = 100;
+    const health = 100;
     const position = new Vector2(x, y)
 
     const projectileColor = colors.projectile
     const projectileSpeed = 200;
     const projectileLifetime = 5000;
+    const projectileDamage = 10;
     const minimumRefactoryPeriod = 500;
 
     this.world.createEntity()
-      .addComponent(Attack, { projectileColor, projectileSpeed, projectileLifetime, minimumRefactoryPeriod })
+      .addComponent(Attack, { projectileColor, projectileSpeed, projectileLifetime, projectileDamage, minimumRefactoryPeriod })
       .addComponent(Circle, { radius, color, position })
       .addComponent(Collidable)
+      .addComponent(Health, { health, maxHealth: health })
       .addComponent(Moveable, { speed })
       .addComponent(Selectable)
       .addComponent(Team, { name: teamName })

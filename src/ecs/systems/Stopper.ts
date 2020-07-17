@@ -8,6 +8,8 @@ import positionsAreClose from "../utils/positionsAreClose";
 import DestroyedOnImpact from "../components/DestroyedOnImpact";
 import Destination from "../components/Destination";
 import Collidable from "../components/Collidable";
+import DoesDamage from "../components/DoesDamage";
+import Health from "../components/Health";
 
 const isCloseTo = R.curry((e1: Entity, e2: Entity) => {
   if (e1 === e2) return false;
@@ -36,12 +38,18 @@ class Stopper extends System {
   }
 
   private stopIfColliding = (entity: Entity) => {
-    const isCollision = R.any(isCloseTo(entity), this.queries.collideables.results)
+    const other = R.find(isCloseTo(entity), this.queries.collideables.results)
 
-    if (isCollision) {
-      entity.getMutableComponent(Moveable).speed = 0
+    if (R.isNil(other)) return
+
+    entity.getMutableComponent(Moveable).speed = 0
+
+    if (entity.hasComponent(DoesDamage) && other.hasComponent(Health)) {
+      const { damage } = entity.getComponent(DoesDamage)
+      other.getMutableComponent(Health).health -= damage
     }
-    if (isCollision && entity.hasComponent(DestroyedOnImpact)) {
+
+    if (entity.hasComponent(DestroyedOnImpact)) {
       entity.remove()
     }
   }
