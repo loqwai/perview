@@ -4,6 +4,7 @@ import Selectable from "../components/Selectable";
 import RectangleSelection from "../components/RectangleSelection";
 import positionsAreClose from "../utils/positionsAreClose";
 import Position from "../components/Position";
+import Health from "../components/Health";
 
 interface Colors {
   background: string;
@@ -31,6 +32,7 @@ class Renderer extends System {
   execute(delta: number, time: number): void {
     this.clear()
     this.queries.circles.results.forEach(this.drawCircle)
+    this.queries.healths.results.forEach(this.drawHealth)
     this.queries.rectangleSelections.results.forEach(this.drawRectangleSelection)
   }
 
@@ -67,6 +69,29 @@ class Renderer extends System {
     }
   }
 
+  private drawHealth = (entity: Entity) => {
+    const ctx = this.ctx;
+    if (!ctx) return;
+
+    const { position } = entity.getComponent(Position);
+    const { health, maxHealth } = entity.getComponent(Health);
+
+    const x = position.x - 10
+    const y = position.y + 15
+    const w = 20
+    const h = 4
+
+    const wHealth = w * health / maxHealth
+
+    ctx.lineWidth = 2
+    ctx.strokeStyle = '#222'
+    ctx.strokeRect(x, y, w, h)
+
+    ctx.lineWidth = 0
+    ctx.fillStyle = this.colors.selection;
+    ctx.fillRect(x, y, wHealth, h)
+  }
+
   private drawRectangleSelection = (entity: Entity) => {
     if (!this.ctx) return;
 
@@ -87,6 +112,7 @@ class Renderer extends System {
 
 Renderer.queries = {
   circles: { components: [Circle, Position] },
+  healths: { components: [Health, Position] },
   rectangleSelections: { components: [RectangleSelection] },
 }
 

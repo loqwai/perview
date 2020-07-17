@@ -68,7 +68,7 @@ class Game {
   }
 
   start = () => {
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 10; i++) {
       this.createFriendly(50 + 50 * i, 500)
       this.createEnemy(50 + 50 * i, 100)
     }
