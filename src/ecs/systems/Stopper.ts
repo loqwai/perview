@@ -1,4 +1,5 @@
 import { System, Entity } from "ecsy";
+import * as R from 'ramda'
 
 import Circle from "../components/Circle";
 import Moveable from "../components/Moveable";
@@ -7,6 +8,16 @@ import positionsAreClose from "../utils/positionsAreClose";
 import DestroyedOnImpact from "../components/DestroyedOnImpact";
 import Destination from "../components/Destination";
 import Collidable from "../components/Collidable";
+
+const isCloseTo = R.curry((e1: Entity, e2: Entity) => {
+  if (e1 === e2) return false;
+
+  const c1 = e1.getComponent(Circle)
+  const c2 = e2.getComponent(Circle)
+  const threshold = c1.radius + c2.radius
+
+  return positionsAreClose(c1.position, c2.position, threshold)
+})
 
 class Stopper extends System {
   execute(_delta: number, _time: number): void {
@@ -25,24 +36,14 @@ class Stopper extends System {
   }
 
   private stopIfColliding = (entity: Entity) => {
-    const { radius, position } = entity.getComponent(Circle)
-    const isDestroyedOnImpact = !!entity.getComponent(DestroyedOnImpact)
+    const isCollision = R.any(isCloseTo(entity), this.queries.collideables.results)
 
-    this.queries.collideables.results.forEach(otherEntity => {
-      if (entity === otherEntity) return;
-
-      const other = otherEntity.getComponent(Circle)
-      const threshold = radius + other.radius
-
-      const isClose = positionsAreClose(position, other.position, threshold)
-
-      if (isClose) {
-        entity.getMutableComponent(Moveable).speed = 0
-      }
-      if (isClose && isDestroyedOnImpact) {
-        entity.remove()
-      }
-    })
+    if (isCollision) {
+      entity.getMutableComponent(Moveable).speed = 0
+    }
+    if (isCollision && entity.hasComponent(DestroyedOnImpact)) {
+      entity.remove()
+    }
   }
 }
 

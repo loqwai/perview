@@ -9,6 +9,7 @@ import Vector2 from "../types/Vector2";
 import Moveable from "../components/Moveable";
 import distanceBetween from "../utils/distanceBetween";
 import DestroyedOnImpact from "../components/DestroyedOnImpact";
+import Lifespan from "../components/Lifespan";
 
 class Attacker extends System {
   execute(_delta: number, time: number): void {
@@ -59,6 +60,7 @@ class Attacker extends System {
       .addComponent(Circle, { color: attack.projectileColor, radius: 2, position: spawnPosition })
       .addComponent(DestroyedOnImpact)
       .addComponent(Moveable, { speed: attack.projectileSpeed, direction })
+      .addComponent(Lifespan, { createdAt: time, ttl: attack.projectileLifetime })
   }
 }
 

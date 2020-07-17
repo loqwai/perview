@@ -7,6 +7,7 @@ import Circle from './components/Circle'
 import Collidable from './components/Collidable'
 import Destination from './components/Destination'
 import DestroyedOnImpact from './components/DestroyedOnImpact'
+import Lifespan from './components/Lifespan'
 import Moveable from './components/Moveable'
 import RectangleSelection from './components/RectangleSelection'
 import Selectable from './components/Selectable'
@@ -18,6 +19,7 @@ import RectangleSelector from './systems/RectangleSelector'
 import Renderer from './systems/Renderer'
 import Selector from './systems/Selector'
 import Stopper from './systems/Stopper'
+import EnforceLifespan from './systems/EnforceLifespan'
 
 const colors = {
   friendly: '#59cd90',
@@ -39,6 +41,7 @@ class Game {
     this.animationFrameRequest = null
     this.world = new World()
       .registerSystem(Attacker)
+      .registerSystem(EnforceLifespan)
       .registerSystem(Mover)
       .registerSystem(RectangleSelector)
       .registerSystem(Renderer, { canvas, colors })
@@ -49,6 +52,7 @@ class Game {
       .registerComponent(Collidable)
       .registerComponent(Destination)
       .registerComponent(DestroyedOnImpact)
+      .registerComponent(Lifespan)
       .registerComponent(Moveable)
       .registerComponent(RectangleSelection)
       .registerComponent(Selectable)
@@ -70,9 +74,9 @@ class Game {
     const position = new Vector2(x, y)
 
     const projectileColor = colors.projectile
-    const projectileSpeed = 100;
+    const projectileSpeed = 200;
     const projectileLifetime = 5000;
-    const minimumRefactoryPeriod = 1000;
+    const minimumRefactoryPeriod = 500;
 
     this.world.createEntity()
       .addComponent(Attack, { projectileColor, projectileSpeed, projectileLifetime, minimumRefactoryPeriod })
@@ -89,9 +93,9 @@ class Game {
     const position = new Vector2(x, y)
 
     const projectileColor = colors.projectile
-    const projectileSpeed = 100;
+    const projectileSpeed = 200;
     const projectileLifetime = 5000;
-    const minimumRefactoryPeriod = 1000;
+    const minimumRefactoryPeriod = 500;
 
     this.world.createEntity()
       .addComponent(Attack, { projectileColor, projectileSpeed, projectileLifetime, minimumRefactoryPeriod })
