@@ -4,8 +4,6 @@ import * as R from 'ramda'
 import Team from '../components/Team'
 import Attack from "../components/Attack";
 import Circle from "../components/Circle";
-import unitVector from "../utils/unitVector";
-import Vector2 from "../types/Vector2";
 import Moveable from "../components/Moveable";
 import distanceBetween from "../utils/distanceBetween";
 import DestroyedOnImpact from "../components/DestroyedOnImpact";
@@ -49,21 +47,14 @@ class Attacker extends System {
     const { position } = attacker.getComponent(Position)
     const { position: targetPosition } = target.getComponent(Position)
 
-    const direction = unitVector({
-      x: targetPosition.x - position.x,
-      y: targetPosition.y - position.y,
-    })
-
-    const spawnPosition = new Vector2(
-      position.x + (direction.x * (radius + 3)),
-      position.y + (direction.y * (radius + 3)),
-    )
+    const direction = targetPosition.subtract(position).unitMut().multiplyScalarMut(attack.projectileSpeed)
+    const spawnPosition = direction.unit().multiplyScalarMut(radius + 3).addMut(position)
 
     this.world.createEntity()
       .addComponent(Circle, { color: attack.projectileColor, radius: 2 })
       .addComponent(DoesDamage, { damage: attack.projectileDamage })
       .addComponent(DestroyedOnImpact)
-      .addComponent(Moveable, { speed: attack.projectileSpeed, direction })
+      .addComponent(Moveable, { maxSpeed: attack.projectileSpeed, direction })
       .addComponent(Position, { position: spawnPosition })
       .addComponent(Lifespan, { createdAt: time, ttl: attack.projectileLifetime })
   }

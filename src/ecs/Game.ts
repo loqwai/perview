@@ -101,7 +101,7 @@ class Game {
     const teamName = "Friendly"
     const color = colors.friendly
     const radius = 10;
-    const speed = 100;
+    const maxSpeed = 100;
     const health = 100;
     const direction = new Vector2()
     const position = new Vector2(x, y)
@@ -117,7 +117,7 @@ class Game {
       .addComponent(Circle, { radius, color })
       .addComponent(Collidable)
       .addComponent(Health, { health, maxHealth: health })
-      .addComponent(Moveable, { direction, speed })
+      .addComponent(Moveable, { direction, maxSpeed })
       .addComponent(Position, { position })
       .addComponent(Selectable)
       .addComponent(Team, { name: teamName })

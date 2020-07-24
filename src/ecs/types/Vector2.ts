@@ -9,21 +9,90 @@ class Vector2 {
     this.y = y;
   }
 
-  set(x: number, y: number) {
+  set = (x: number, y: number) => {
     this.x = x;
     this.y = y;
     return this;
   }
 
-  copy(source: Vector2) {
+  copy = (source: Vector2) => {
     this.x = source.x;
     this.y = source.y;
     return this;
   }
 
-  clone() {
-    return new Vector2(this.x, this.y)
+  clone = () => new Vector2(this.x, this.y)
+
+  /**
+   * returns a new vector with the other vector's x & y
+   * components added to this one
+   * */
+  add = (other: Vector2): Vector2 => this.clone().addMut(other)
+
+  /**
+   * mutates the vector, adding the other vector's x & y
+   * components to this one
+   * */
+  addMut = (other: Vector2): Vector2 => {
+    this.x += other.x
+    this.y += other.y
+    return this
   }
+
+  /**
+   * Returns a new vector with both x & y divided by n
+   * */
+  divideScalar = (n: number) => this.clone().divideScalarMut(n)
+
+  /**
+   * Mutates the current vector, dividing both x & y by n.
+   * Returns itself for easy chaining
+   * */
+  divideScalarMut = (n: number): Vector2 => {
+    this.x /= n
+    this.y /= n
+    return this
+  }
+
+  magnitude = () => Math.sqrt((this.x * this.x) + (this.y * this.y))
+
+  /**
+   * Returns a new vector with both x & y multiplied by n
+   * */
+  multiplyScalar = (n: number) => this.clone().multiplyScalarMut(n)
+
+  /**
+   * Mutates the current vector, dividing both x & y by n.
+   * Returns itself for easy chaining
+   * */
+  multiplyScalarMut = (n: number): Vector2 => {
+    this.x *= n
+    this.y *= n
+    return this
+  }
+
+  /**
+   * returns a new vector with the other vector's x & y
+   * components subtracted from this one
+   * */
+  subtract = (other: Vector2): Vector2 => this.clone().subtractMut(other)
+
+  /**
+   * mutates the vector, subtracting the other vector's x & y
+   * components from this one
+   * */
+  subtractMut = (other: Vector2): Vector2 => {
+    this.x -= other.x
+    this.y -= other.y
+    return this
+  }
+
+  /**
+   * Returns a new unit vector of the current vector
+   * */
+  unit = () => this.clone().unitMut()
+
+  unitMut = () => this.divideScalarMut(this.magnitude())
 }
 
 export default Vector2

@@ -4,17 +4,17 @@ import Position from "../components/Position";
 import Moveable from "../components/Moveable";
 import Selectable from "../components/Selectable";
 
-import unitVector from "../utils/unitVector";
 import Destination from "../components/Destination";
+import Vector2 from "../types/Vector2";
 
 class Mover extends System {
   execute(delta: number, _time: number): void {
     this.queries.moveables.results.forEach(entity => {
       const { position } = entity.getMutableComponent(Position)
-      const { direction, speed } = entity.getComponent(Moveable)
+      const { direction } = entity.getComponent(Moveable)
 
-      const mX = direction.x * (delta * speed / 1000)
-      const mY = direction.y * (delta * speed / 1000)
+      const mX = direction.x * (delta / 1000)
+      const mY = direction.y * (delta / 1000)
 
       position.x += mX
       position.y += mY
@@ -28,17 +28,15 @@ class Mover extends System {
 
     this.selected().forEach(entity => {
       const { position } = entity.getComponent(Position)
+      const { direction, maxSpeed } = entity.getMutableComponent(Moveable)
 
-      const vector = unitVector({
-        x: clientX - position.x,
-        y: clientY - position.y,
-      })
+      const vector = new Vector2(clientX, clientY).subtractMut(position).unitMut().multiplyScalar(maxSpeed)
 
       if (!entity.hasComponent(Destination)) {
         entity.addComponent(Destination)
       }
       entity.getMutableComponent(Destination).position.set(clientX, clientY)
-      entity.getMutableComponent(Moveable).direction.set(vector.x, vector.y)
+      direction.copy(vector)
     });
   }
 
