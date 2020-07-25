@@ -24,6 +24,7 @@ import Health from './components/Health'
 import EnforceHealth from './systems/EnforceHealth'
 import DoesDamage from './components/DoesDamage'
 import Position from './components/Position'
+import Boidser from './systems/Boidser'
 
 const colors = {
   friendly: '#59cd90',
@@ -45,6 +46,7 @@ class Game {
     this.animationFrameRequest = null
     this.world = new World()
       .registerSystem(Attacker)
+      .registerSystem(Boidser)
       .registerSystem(EnforceLifespan)
       .registerSystem(EnforceHealth)
       .registerSystem(Mover)

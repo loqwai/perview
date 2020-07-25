@@ -21,7 +21,7 @@ class Vector2 {
     return this;
   }
 
-  clone = () => new Vector2(this.x, this.y)
+  clone = () => new Vector2().copy(this)
 
   /**
    * returns a new vector with the other vector's x & y
@@ -71,6 +71,11 @@ class Vector2 {
     return this
   }
 
+  toJSON = (indent: number) => {
+    const { x, y } = this
+    return JSON.stringify({ x, y }, null, indent)
+  }
+
   /**
    * returns a new vector with the other vector's x & y
    * components subtracted from this one
@@ -88,11 +93,18 @@ class Vector2 {
   }
 
   /**
-   * Returns a new unit vector of the current vector
+   * Returns a new unit vector of the current vector. If the magnitude of the
+   * current vector is 0, it will return the 0, 0 vector
    * */
   unit = () => this.clone().unitMut()
 
-  unitMut = () => this.divideScalarMut(this.magnitude())
+  unitMut = () => {
+    const magnitude = this.magnitude()
+
+    return (magnitude === 0)
+      ? this.multiplyScalar(0)
+      : this.divideScalarMut(magnitude)
+  }
 }
 
 export default Vector2
