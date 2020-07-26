@@ -71,9 +71,9 @@ class Vector2 {
     return this
   }
 
-  toJSON = (indent: number) => {
+  toJSON = (indent?: number) => {
     const { x, y } = this
-    return JSON.stringify({ x, y }, null, indent)
+    return JSON.stringify({ x, y }, null, indent ?? 0)
   }
 
   /**

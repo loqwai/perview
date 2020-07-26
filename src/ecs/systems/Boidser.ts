@@ -5,6 +5,7 @@ import Moveable from "../components/Moveable"
 import Position from "../components/Position"
 import Team from "../components/Team"
 import Vector2 from "../types/Vector2"
+import Destination from "../components/Destination"
 
 class Boidser extends System {
   execute(_delta: number, _time: number): void {
@@ -15,14 +16,48 @@ class Boidser extends System {
     const { direction, maxSpeed } = entity.getMutableComponent(Moveable)
     const teammates = this.getTeammates(entity)
 
-    const separatingForce = this.calcSeparatingForce(entity, teammates)
+    const destinationForce = this.calcDestinationForce(entity)
+    const separationForce = this.calcSeparationForce(entity, teammates)
+    const cohesionForce = this.calcCohesionForce(entity, teammates)
 
-    direction.addMut(separatingForce).unitMut().multiplyScalarMut(maxSpeed)
+    direction.set(0, 0)
+             .addMut(destinationForce)
+             .addMut(separationForce.multiplyScalarMut(50))
+             .addMut(cohesionForce.divideScalarMut(1000))
+
+    const speed = direction.magnitude()
+    if (maxSpeed < speed) {
+      direction.divideScalarMut(speed / maxSpeed)
+    }
   }
 
-  calcSeparatingForce = (entity: Entity, teammates: Entity[]) => {
+  calcDestinationForce = (entity: Entity) => {
+    if (!entity.hasComponent(Destination)) return new Vector2(0, 0)
+
+    const { position: destination } =  entity.getComponent(Destination)
+    const { position } =  entity.getComponent(Position)
+    return destination.subtract(position)
+  }
+
+  calcCohesionForce = (entity: Entity, teammates: Entity[]) => {
+    const { position } = entity.getComponent(Position)
+    const averagePosition = this.calcAveragePosition(teammates)
+
+    return averagePosition.subtractMut(position)
+  }
+
+  calcAveragePosition = (entities: Entity[]) => {
+    const positions = entities.map(e => e.getComponent(Position).position)
+    const sumPositions = new Vector2(0, 0)
+    positions.forEach(sumPositions.addMut)
+
+    if (R.isEmpty(positions)) return sumPositions
+    return sumPositions.divideScalarMut(positions.length)
+  }
+
+  calcSeparationForce = (entity: Entity, teammates: Entity[]) => {
     const vector = new Vector2(0, 0)
-    const forces = R.map(this.calcSingleSeparatingForce(entity), teammates)
+    const forces = R.map(this.calcSingleSeparationForce(entity), teammates)
 
     forces.forEach(vector.addMut)
 
@@ -36,7 +71,7 @@ class Boidser extends System {
     return unit
   }
 
-  calcSingleSeparatingForce = R.curry((entity: Entity, other: Entity) => {
+  calcSingleSeparationForce = R.curry((entity: Entity, other: Entity) => {
     const { position } = entity.getComponent(Position)
     const { position: otherPosition } = other.getComponent(Position)
     const { minSeparation } = entity.getComponent(Moveable)
@@ -44,7 +79,7 @@ class Boidser extends System {
     const vector = position.subtract(otherPosition)
     const distance = vector.magnitude()
 
-    if (distance > minSeparation) return vector.multiplyScalar(0)
+    if (minSeparation < distance) return vector.multiplyScalar(0)
 
     return vector.divideScalarMut(distance)
   })

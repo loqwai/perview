@@ -5,6 +5,8 @@ import RectangleSelection from "../components/RectangleSelection";
 import positionsAreClose from "../utils/positionsAreClose";
 import Position from "../components/Position";
 import Health from "../components/Health";
+import Moveable from "../components/Moveable";
+import Team from "../components/Team";
 
 interface Colors {
   background: string;
@@ -22,11 +24,14 @@ class Renderer extends System {
   private colors: Colors;
   private ctx: CanvasRenderingContext2D | null;
 
+  private debug: boolean;
+
   constructor(world: World, { canvas, colors, priority }: Attributes) {
     super(world, { priority })
     this.canvas = canvas
     this.colors = colors
     this.ctx = this.canvas.getContext('2d')
+    this.debug = false
   }
 
   execute(delta: number, time: number): void {
@@ -34,6 +39,10 @@ class Renderer extends System {
     this.queries.circles.results.forEach(this.drawCircle)
     this.queries.healths.results.forEach(this.drawHealth)
     this.queries.rectangleSelections.results.forEach(this.drawRectangleSelection)
+  }
+
+  toggleDebug = () => {
+    this.debug = !this.debug
   }
 
   private clear = () => {
@@ -58,14 +67,25 @@ class Renderer extends System {
     ctx.fill()
     ctx.lineWidth = 2
     ctx.strokeStyle = '#222'
-    ctx.stroke()    
+    ctx.stroke()
 
     if (selected) {
       ctx.beginPath()
       ctx.arc(x, y, radius + 2, 0, 2 * Math.PI, false)
       ctx.lineWidth = 2
       ctx.strokeStyle = this.colors.selection
-      ctx.stroke()    
+      ctx.stroke()
+    }
+
+    if (this.debug && entity.hasAllComponents([Team, Moveable])) {
+      const { direction } = entity.getComponent(Moveable)
+      const {x, y} = position.add(direction)
+      ctx.lineWidth = 2
+      ctx.strokeStyle = '#f00'
+      ctx.beginPath()
+      ctx.moveTo(position.x, position.y)
+      ctx.lineTo(x, y)
+      ctx.stroke()
     }
   }
 

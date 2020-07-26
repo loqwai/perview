@@ -1,4 +1,5 @@
 import React, { MouseEventHandler } from 'react';
+import { useKeyPressEvent } from 'react-use'
 
 import Game from './ecs/Game'
 import './App.css';
@@ -46,11 +47,13 @@ const App = () => {
     gameRef.current?.onMouseUp(e)
   }
 
+  useKeyPressEvent('d', () => gameRef.current?.toggleDebug())
+
   return (
     <div className="App">
-      <canvas 
-        ref={setCanvas} 
-        onMouseDown={onMouseDown} 
+      <canvas
+        ref={setCanvas}
+        onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
         onContextMenu={e => e.preventDefault()} />

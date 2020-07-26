@@ -14,7 +14,6 @@ import Selectable from './components/Selectable'
 import Team from './components/Team'
 
 import Attacker from './systems/Attacker'
-import Mover from './systems/Mover'
 import RectangleSelector from './systems/RectangleSelector'
 import Renderer from './systems/Renderer'
 import Selector from './systems/Selector'
@@ -25,6 +24,9 @@ import EnforceHealth from './systems/EnforceHealth'
 import DoesDamage from './components/DoesDamage'
 import Position from './components/Position'
 import Boidser from './systems/Boidser'
+import Debug from './components/Debug'
+import DestinationSetter from './systems/DestinationSetter'
+import Mover from './systems/Mover'
 
 const colors = {
   friendly: '#59cd90',
@@ -36,17 +38,16 @@ const colors = {
 
 class Game {
   private world: World
-  private canvas: HTMLCanvasElement
   private lastTime: number
   private animationFrameRequest: number | null
 
-  constructor({canvas}: {canvas: HTMLCanvasElement}) {
-    this.canvas = canvas
+  constructor({ canvas }: {canvas: HTMLCanvasElement}) {
     this.lastTime = performance.now()
     this.animationFrameRequest = null
     this.world = new World()
       .registerSystem(Attacker)
       .registerSystem(Boidser)
+      .registerSystem(DestinationSetter)
       .registerSystem(EnforceLifespan)
       .registerSystem(EnforceHealth)
       .registerSystem(Mover)
@@ -57,6 +58,7 @@ class Game {
       .registerComponent(Attack)
       .registerComponent(Circle)
       .registerComponent(Collidable)
+      .registerComponent(Debug)
       .registerComponent(Destination)
       .registerComponent(DestroyedOnImpact)
       .registerComponent(DoesDamage)
@@ -131,12 +133,17 @@ class Game {
     cancelAnimationFrame(this.animationFrameRequest)
   }
 
+  toggleDebug = () => {
+    const renderer = this.world.getSystem(Renderer) as Renderer
+    renderer.toggleDebug()
+  }
+
   onMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    const mover = this.world.getSystem(Mover) as Mover
+    const destionationSetter = this.world.getSystem(DestinationSetter) as DestinationSetter
     const selector = this.world.getSystem(Selector) as Selector
     const rectangleSelector = this.world.getSystem(RectangleSelector) as RectangleSelector
 
-    mover.onMouseDown(e)
+    destionationSetter.onMouseDown(e)
     selector.onMouseDown(e)
     rectangleSelector.onMouseDown(e)
   }
