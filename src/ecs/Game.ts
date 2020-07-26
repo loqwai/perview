@@ -76,7 +76,7 @@ class Game {
   start = () => {
     for (let i = 0; i < 10; i++) {
       this.createFriendly(50 + 50 * i, 500)
-      // this.createEnemy(50 + 50 * i, 100)
+      this.createEnemy(50 + 50 * i, 100)
     }
     this.run();
   }
@@ -90,7 +90,7 @@ class Game {
 
     const projectileColor = colors.projectile
     const projectileSpeed = 200;
-    const projectileLifetime = 5000;
+    const projectileLifetime = 1000;
     const projectileDamage = 10;
     const minimumRefactoryPeriod = 500;
 
@@ -112,12 +112,12 @@ class Game {
     const direction = new Vector2()
     const position = new Vector2(x, y)
 
-    const minSeparation = 2 * radius
-    const separation = 3 * radius;
+    const minSeparation = 3 * radius
+    const separation = 4 * radius;
 
     const projectileColor = colors.projectile
     const projectileSpeed = 200;
-    const projectileLifetime = 5000;
+    const projectileLifetime = 1000;
     const projectileDamage = 10;
     const minimumRefactoryPeriod = 500;
 
