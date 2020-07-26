@@ -5,8 +5,8 @@ import RectangleSelection from "../components/RectangleSelection";
 import positionsAreClose from "../utils/positionsAreClose";
 import Position from "../components/Position";
 import Health from "../components/Health";
-import Moveable from "../components/Moveable";
-import Team from "../components/Team";
+import DebugVector from "../components/DebugVector";
+import Vector2 from "../types/Vector2";
 
 interface Colors {
   background: string;
@@ -39,6 +39,8 @@ class Renderer extends System {
     this.queries.circles.results.forEach(this.drawCircle)
     this.queries.healths.results.forEach(this.drawHealth)
     this.queries.rectangleSelections.results.forEach(this.drawRectangleSelection)
+    this.queries.debugVectors.results.forEach(this.drawDebugVector)
+    this.queries.debugVectors.results.forEach(e => e.remove())
   }
 
   toggleDebug = () => {
@@ -76,17 +78,11 @@ class Renderer extends System {
       ctx.strokeStyle = this.colors.selection
       ctx.stroke()
     }
+  }
 
-    if (this.debug && entity.hasAllComponents([Team, Moveable])) {
-      const { direction } = entity.getComponent(Moveable)
-      const {x, y} = position.add(direction)
-      ctx.lineWidth = 2
-      ctx.strokeStyle = '#f00'
-      ctx.beginPath()
-      ctx.moveTo(position.x, position.y)
-      ctx.lineTo(x, y)
-      ctx.stroke()
-    }
+  private drawDebugVector = (entity: Entity) => {
+    if (!this.debug) return;
+    this.drawVector(entity.getComponent(DebugVector))
   }
 
   private drawHealth = (entity: Entity) => {
@@ -128,10 +124,25 @@ class Renderer extends System {
     ctx.strokeStyle = this.colors.selection;
     ctx.strokeRect(x, y, w, h)
   }
+
+  private drawVector = ({ position, direction, color }: { position: Vector2, direction: Vector2, color: string }) => {
+    if (!this.ctx) return;
+
+    const { x, y } = position.add(direction)
+
+    const ctx = this.ctx
+    ctx.lineWidth = 2
+    ctx.strokeStyle = color
+    ctx.beginPath()
+    ctx.moveTo(position.x, position.y)
+    ctx.lineTo(x, y)
+    ctx.stroke()
+  }
 }
 
 Renderer.queries = {
   circles: { components: [Circle, Position] },
+  debugVectors: { components: [DebugVector] },
   healths: { components: [Health, Position] },
   rectangleSelections: { components: [RectangleSelection] },
 }

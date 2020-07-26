@@ -27,6 +27,7 @@ import Boidser from './systems/Boidser'
 import Debug from './components/Debug'
 import DestinationSetter from './systems/DestinationSetter'
 import Mover from './systems/Mover'
+import DebugVector from './components/DebugVector'
 
 const colors = {
   friendly: '#59cd90',
@@ -59,6 +60,7 @@ class Game {
       .registerComponent(Circle)
       .registerComponent(Collidable)
       .registerComponent(Debug)
+      .registerComponent(DebugVector)
       .registerComponent(Destination)
       .registerComponent(DestroyedOnImpact)
       .registerComponent(DoesDamage)
@@ -74,7 +76,7 @@ class Game {
   start = () => {
     for (let i = 0; i < 10; i++) {
       this.createFriendly(50 + 50 * i, 500)
-      this.createEnemy(50 + 50 * i, 100)
+      // this.createEnemy(50 + 50 * i, 100)
     }
     this.run();
   }
@@ -110,6 +112,9 @@ class Game {
     const direction = new Vector2()
     const position = new Vector2(x, y)
 
+    const minSeparation = 2 * radius
+    const separation = 3 * radius;
+
     const projectileColor = colors.projectile
     const projectileSpeed = 200;
     const projectileLifetime = 5000;
@@ -121,7 +126,7 @@ class Game {
       .addComponent(Circle, { radius, color })
       .addComponent(Collidable)
       .addComponent(Health, { health, maxHealth: health })
-      .addComponent(Moveable, { direction, maxSpeed })
+      .addComponent(Moveable, { direction, maxSpeed, separation, minSeparation })
       .addComponent(Position, { position })
       .addComponent(Selectable)
       .addComponent(Team, { name: teamName })
