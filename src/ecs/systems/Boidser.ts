@@ -24,11 +24,7 @@ class Boidser extends System {
              .addMut(destinationForce)
              .addMut(separationForce.multiplyScalarMut(50))
              .addMut(cohesionForce.divideScalarMut(1000))
-
-    const speed = direction.magnitude()
-    if (maxSpeed < speed) {
-      direction.divideScalarMut(speed / maxSpeed)
-    }
+             .limitMut(maxSpeed)
   }
 
   calcDestinationForce = (entity: Entity) => {

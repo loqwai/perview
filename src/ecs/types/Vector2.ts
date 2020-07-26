@@ -40,6 +40,24 @@ class Vector2 {
   }
 
   /**
+   * If the magnitude of the vecor is greater than the limit, it will return
+   * a new vector scaled down so its magnitude is equal to the limit
+   */
+  limit = (n: number) => this.clone().limitMut(n)
+
+  /**
+   * If the magnitude of the vecor is greater than the limit, it will scale
+   * down to a vector with a magnitude equal to the limit
+   */
+  limitMut = (n: number) => {
+    const magnitude = this.magnitude()
+    if (n < magnitude) {
+      this.divideScalarMut(magnitude / n)
+    }
+    return this
+  }
+
+  /**
    * Returns a new vector with both x & y divided by n
    * */
   divideScalar = (n: number) => this.clone().divideScalarMut(n)
