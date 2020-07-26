@@ -112,8 +112,8 @@ class Game {
     const direction = new Vector2()
     const position = new Vector2(x, y)
 
-    const minSeparation = 3 * radius
-    const separation = 4 * radius;
+    const minSeparation = 2 * radius
+    const separation = 3 * radius;
 
     const projectileColor = colors.projectile
     const projectileSpeed = 200;
