@@ -39,6 +39,17 @@ class Vector2 {
     return this
   }
 
+
+  angleTo = (other: Vector2): number => {
+    const {x: x1, y: y1} = this
+    const {x: x2, y: y2} = other
+
+    const numerator = (x1 * x2) + (y1 * y2)
+    const denominator = this.magnitude() * other.magnitude()
+
+    return Math.acos(numerator / denominator)
+  }
+
   /**
    * If the magnitude of the vecor is greater than the limit, it will return
    * a new vector scaled down so its magnitude is equal to the limit

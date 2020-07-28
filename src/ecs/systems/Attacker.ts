@@ -71,21 +71,18 @@ class Attacker extends System {
   private inTheWayOfTarget = R.curry((attacker: Entity, target: Entity, other: Entity) => {
     const { position: p1 } = attacker.getComponent(Position)
     const { position: p2 } = target.getComponent(Position)
-
-    const { position: { x: cx, y: cy } } =  other.getComponent(Position)
+    const { position: p3 } = other.getComponent(Position)
     const { radius } = other.getComponent(Circle)
 
-    const { x: dx, y: dy } = p2.subtract(p1)
+    const vecToTarget = p2.subtract(p1)
+    const vecToOther = p3.subtract(p2) // will be the hypotenuse in our triangle
+    const angle = vecToTarget.angleTo(vecToOther)
 
-    const A = (dx * dx) + (dy * dy)
-    const rx = dx * (p1.x - cx)
-    const ry = dy * (p1.y - cy)
-    const B = 2 * (rx + ry)
-    const C = ((p1.x - cx) * (p1.x - cx)) + ((p1.y - cy) * (p1.y - cy)) - (radius * radius)
+    if (vecToTarget.magnitude() < vecToOther.magnitude()) return false // other is behind our target
+    if (angle > Math.PI / 2) return false // if the angle is greater than 90º, it's not in our way
 
-    const d = (B * B) - (4 * A * C)
-
-    return 0 <= d
+    const distance = Math.sin(angle) * vecToOther.magnitude() // the closest the target gets to vecToTarget
+    return distance < radius
   })
 
   private attackTarget = (time: number, attacker: Entity, target: Entity) => {

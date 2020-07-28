@@ -90,7 +90,7 @@ class Game {
 
     const projectileColor = colors.projectile
     const projectileSpeed = 200;
-    const projectileLifetime = 1000;
+    const projectileLifetime = 1800;
     const projectileDamage = 10;
     const minimumRefactoryPeriod = 500;
 
@@ -117,7 +117,7 @@ class Game {
 
     const projectileColor = colors.projectile
     const projectileSpeed = 200;
-    const projectileLifetime = 1000;
+    const projectileLifetime = 1800;
     const projectileDamage = 10;
     const minimumRefactoryPeriod = 500;
 
