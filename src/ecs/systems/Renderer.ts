@@ -53,10 +53,8 @@ class Renderer extends System {
     this.queries.debugVectors.results.forEach(e => e.remove());
   }
 
-  private cameraOffset = () => {
-    const camera = this.queries.cameras.results[0]
-    return camera.getComponent(Position).position
-  }
+  private cameraOffset = () => this.queries.cameras.results[0].getComponent(Position).position
+  private cameraScale = () => this.queries.cameras.results[0].getComponent(Camera).zoom
 
   private clear = () => {
     if (!this.ctx) return;
@@ -68,24 +66,29 @@ class Renderer extends System {
   private renderCircle = (entity: Entity) => {
     if (!this.ctx) return
 
+    const offset = this.cameraOffset()
+    const scale = this.cameraScale()
     const ctx = this.ctx
     const { color, radius } = entity.getComponent(Circle)
     const { position } = entity.getComponent(Position)
     const selected = entity.getComponent(Selectable)?.selected ?? false
-    const { x, y } = position.add(this.cameraOffset())
+    const { x, y } = position.add(offset).multiplyScalar(scale)
+
+    const circleRadius = radius * scale
+    const selectionRadius = (radius + 2) * scale
 
     ctx.fillStyle = color
     ctx.beginPath()
-    ctx.arc(x, y, radius, 0, 2 * Math.PI, false)
+    ctx.arc(x, y, circleRadius, 0, 2 * Math.PI, false)
     ctx.fill()
-    ctx.lineWidth = 2
+    ctx.lineWidth = 2 * scale
     ctx.strokeStyle = '#222'
     ctx.stroke()
 
     if (selected) {
       ctx.beginPath()
-      ctx.arc(x, y, radius + 2, 0, 2 * Math.PI, false)
-      ctx.lineWidth = 2
+      ctx.arc(x, y, selectionRadius, 0, 2 * Math.PI, false)
+      ctx.lineWidth = 2 * scale
       ctx.strokeStyle = this.colors.selection
       ctx.stroke()
     }
@@ -97,17 +100,18 @@ class Renderer extends System {
     const ctx = this.ctx;
     if (!ctx) return;
 
-    const position = entity.getComponent(Position).position.add(this.cameraOffset());
+    const offset = this.cameraOffset()
+    const scale = this.cameraScale()
+    const { position } = entity.getComponent(Position);
     const { health, maxHealth } = entity.getComponent(Health);
 
-    const x = position.x - 10
-    const y = position.y + 15
-    const w = 20
-    const h = 4
+    const { x, y } = position.add(new Vector2(-10, 15)).addMut(offset).multiplyScalarMut(scale)
+    const w = 20 * scale
+    const h = 4 * scale
 
     const wHealth = w * health / maxHealth
 
-    ctx.lineWidth = 2
+    ctx.lineWidth = 2 * scale
     ctx.strokeStyle = '#222'
     ctx.strokeRect(x, y, w, h)
 
@@ -119,18 +123,21 @@ class Renderer extends System {
   private renderRectangleSelection = (entity: Entity) => {
     if (!this.ctx) return;
 
+    const offset = this.cameraOffset()
+    const scale = this.cameraScale()
     const ctx = this.ctx
     const rectangleSelection = entity.getComponent(RectangleSelection)
-    const startPosition = rectangleSelection.startPosition.add(this.cameraOffset())
-    const endPosition = rectangleSelection.endPosition.add(this.cameraOffset())
 
-    if (positionsAreClose(startPosition, endPosition, 5)) return;
+    if (positionsAreClose(rectangleSelection.startPosition, rectangleSelection.endPosition, 5)) return;
+
+    const startPosition = rectangleSelection.startPosition.add(offset).multiplyScalarMut(scale)
+    const endPosition = rectangleSelection.endPosition.add(offset).multiplyScalarMut(scale)
 
     const { x, y } = startPosition
     const w = endPosition.x - x
     const h = endPosition.y - y
 
-    ctx.lineWidth = 2
+    ctx.lineWidth = 2 * scale
     ctx.strokeStyle = this.colors.selection;
     ctx.strokeRect(x, y, w, h)
   }

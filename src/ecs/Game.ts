@@ -29,6 +29,7 @@ import Camera from './components/Camera';
 import VectorDebugger from './systems/VectorDebugger';
 import VectorDebugState from './components/VectorDebugState';
 import CameraPanner from './systems/CameraPanner';
+import CameraZoomer from './systems/CameraZoomer';
 
 
 
@@ -53,6 +54,7 @@ class Game {
       .registerSystem(Attacker)
       .registerSystem(Boidser)
       .registerSystem(CameraPanner)
+      .registerSystem(CameraZoomer)
       .registerSystem(DestinationSetter)
       .registerSystem(EnforceLifespan)
       .registerSystem(EnforceHealth)
@@ -114,11 +116,11 @@ class Game {
 
   onMouseMove = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => this.rectangleSelector().onMouseMove(e)
   onMouseUp = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => this.rectangleSelector().onMouseUp(e)
-
+  onMouseWheel = (deltaY: number) => this.cameraZoomer().onMouseWheel(deltaY)
 
   private createCamera = () => {
     this.world.createEntity()
-              .addComponent(Camera, { panSpeed: 500 })
+              .addComponent(Camera, { panSpeed: 500, zoomSpeed: 0.1, zoom: 1 })
               .addComponent(Position, { position: new Vector2(0, 0) })
   }
 
@@ -190,6 +192,7 @@ class Game {
   }
 
   private cameraPanner = () => this.world.getSystem(CameraPanner) as CameraPanner
+  private cameraZoomer = () => this.world.getSystem(CameraZoomer) as CameraZoomer
   private destinationSetter = () => this.world.getSystem(DestinationSetter) as DestinationSetter
   private rectangleSelector = () => this.world.getSystem(RectangleSelector) as RectangleSelector
   private renderer = () => this.world.getSystem(Renderer) as Renderer

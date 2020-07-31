@@ -1,5 +1,5 @@
 import React, { MouseEventHandler } from 'react';
-import { useKey } from 'react-use'
+import { useKey, useMouseWheel, useWindowSize } from 'react-use'
 
 import Game from './ecs/Game'
 import './App.css';
@@ -20,18 +20,12 @@ const App = () => {
     }
   }, [canvas])
 
-  React.useEffect(() => {
-    const handleResize = () => {
-      if (!canvas) return
+  const { width, height } = useWindowSize()
 
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-    }
-
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [canvas])
+  if (canvas) {
+    canvas.width = width
+    canvas.height = height
+  }
 
   const onMouseDown: MouseEventHandler<HTMLCanvasElement> = (e) => {
     e.preventDefault();
@@ -53,6 +47,9 @@ const App = () => {
     (e) => gameRef.current?.onKeyUp(e),
     {event: 'keyup'}
   )
+
+  const deltaY = useMouseWheel()
+  React.useEffect(() => gameRef.current?.onMouseWheel(deltaY) , [deltaY])
 
   return (
     <div className="App">

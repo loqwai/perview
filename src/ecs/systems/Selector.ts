@@ -12,7 +12,8 @@ class Selector extends System {
   onMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     if (e.button !== 0) return;
 
-    const clickPosition = new Vector2(e.clientX, e.clientY).subtractMut(this.cameraOffset())
+    const clickPosition = new Vector2(e.clientX, e.clientY).divideScalarMut(this.cameraScale())
+                                                           .subtractMut(this.cameraOffset())
     this.selectCircles(clickPosition)
   };
 
@@ -37,10 +38,8 @@ class Selector extends System {
     })
   }
 
-  private cameraOffset = () => {
-    const camera = this.queries.cameras.results[0]
-    return camera.getComponent(Position).position
-  }
+  private cameraOffset = () => this.queries.cameras.results[0].getComponent(Position).position
+  private cameraScale = () => this.queries.cameras.results[0].getComponent(Camera).zoom
 }
 
 Selector.queries = {
