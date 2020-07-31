@@ -1,7 +1,9 @@
 import { System } from "ecsy";
 
+import Camera from "../components/Camera";
 import Destination from "../components/Destination";
 import Moveable from "../components/Moveable";
+import Position from "../components/Position";
 import Selectable from "../components/Selectable";
 
 class DestinationSetter extends System {
@@ -16,18 +18,24 @@ class DestinationSetter extends System {
       if (!entity.hasComponent(Destination)) {
         entity.addComponent(Destination)
       }
-      entity.getMutableComponent(Destination).position.set(clientX, clientY)
+      entity.getMutableComponent(Destination).position.set(clientX, clientY).subtractMut(this.cameraOffset())
     });
   }
 
-  selected = () => {
+  private selected = () => {
     return this.queries.selectables.results.filter(entity => {
       return entity.getComponent(Selectable).selected
     })
   }
+
+  private cameraOffset = () => {
+    const camera = this.queries.cameras.results[0]
+    return camera.getComponent(Position).position
+  }
 }
 
 DestinationSetter.queries = {
+  cameras: { components: [Camera, Position] },
   selectables: { components: [ Moveable, Selectable ] },
 }
 
