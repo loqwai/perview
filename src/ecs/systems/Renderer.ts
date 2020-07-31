@@ -145,12 +145,14 @@ class Renderer extends System {
 
   private renderVector = ({ position, direction, color }: { position: Vector2, direction: Vector2, color: string }) => {
     if (!this.ctx) return;
+    const offset = this.cameraOffset()
+    const scale = this.cameraScale()
 
-    const offsetPosition = position.add(this.cameraOffset())
-    const { x, y } = offsetPosition.add(direction)
+    const offsetPosition = position.add(offset).multiplyScalarMut(scale)
+    const { x, y } = offsetPosition.add(direction.multiplyScalar(scale))
 
     const ctx = this.ctx
-    ctx.lineWidth = 2
+    ctx.lineWidth = 2 * scale
     ctx.strokeStyle = color
     ctx.beginPath()
     ctx.moveTo(offsetPosition.x, offsetPosition.y)

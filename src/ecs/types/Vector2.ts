@@ -100,10 +100,8 @@ class Vector2 {
     return this
   }
 
-  toJSON = (indent?: number) => {
-    const { x, y } = this
-    return JSON.stringify({ x, y }, null, indent ?? 0)
-  }
+  toJSON = (indent?: number) => JSON.stringify(this.toObject(), null, indent ?? 0)
+  toObject = () => ({ x: this.x, y: this.y })
 
   /**
    * returns a new vector with the other vector's x & y

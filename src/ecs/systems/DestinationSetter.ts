@@ -18,7 +18,9 @@ class DestinationSetter extends System {
       if (!entity.hasComponent(Destination)) {
         entity.addComponent(Destination)
       }
-      entity.getMutableComponent(Destination).position.set(clientX, clientY).subtractMut(this.cameraOffset())
+      entity.getMutableComponent(Destination).position.set(clientX, clientY)
+                                                      .divideScalarMut(this.cameraScale())
+                                                      .subtractMut(this.cameraOffset())
     });
   }
 
@@ -28,10 +30,8 @@ class DestinationSetter extends System {
     })
   }
 
-  private cameraOffset = () => {
-    const camera = this.queries.cameras.results[0]
-    return camera.getComponent(Position).position
-  }
+  private cameraOffset = () => this.queries.cameras.results[0].getComponent(Position).position
+  private cameraScale = () => this.queries.cameras.results[0].getComponent(Camera).zoom
 }
 
 DestinationSetter.queries = {

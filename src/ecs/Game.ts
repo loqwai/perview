@@ -46,10 +46,12 @@ class Game {
   private world: World
   private lastTime: number
   private animationFrameRequest: number | null
+  private canvasSize: { width: number, height: number };
 
   constructor({ canvas }: { canvas: HTMLCanvasElement }) {
     this.lastTime = performance.now()
     this.animationFrameRequest = null
+    this.canvasSize = { width: canvas.width, height: canvas.height }
     this.world = new World()
       .registerSystem(Attacker)
       .registerSystem(Boidser)
@@ -99,6 +101,10 @@ class Game {
     cancelAnimationFrame(this.animationFrameRequest)
   }
 
+  onCanvasResize = ({ width, height }: { width: number, height: number }) => {
+    this.cameraZoomer().onCanvasResize({width, height})
+  }
+
   onKeyDown = (e: KeyboardEvent) => {
     this.vectorDebugger().onKeyDown(e)
     this.cameraPanner().onKeyDown(e)
@@ -116,11 +122,13 @@ class Game {
 
   onMouseMove = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => this.rectangleSelector().onMouseMove(e)
   onMouseUp = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => this.rectangleSelector().onMouseUp(e)
-  onMouseWheel = (deltaY: number) => this.cameraZoomer().onMouseWheel(deltaY)
+  onMouseWheel = (e: WheelEvent) => this.cameraZoomer().onMouseWheel(e)
 
   private createCamera = () => {
+    const { width, height } = this.canvasSize
+
     this.world.createEntity()
-              .addComponent(Camera, { panSpeed: 500, zoomSpeed: 0.1, zoom: 1 })
+              .addComponent(Camera, { panSpeed: 500, zoomSpeed: 0.01, zoom: 1, width, height })
               .addComponent(Position, { position: new Vector2(0, 0) })
   }
 
