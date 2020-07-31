@@ -3,6 +3,8 @@ import Circle from "../components/Circle";
 import Selectable from "../components/Selectable";
 import positionsAreClose from "../utils/positionsAreClose";
 import Position from "../components/Position";
+import Vector2 from "../types/Vector2";
+import Camera from "../components/Camera";
 
 class Selector extends System {
   execute(_delta: number, _time: number): void {}
@@ -10,11 +12,11 @@ class Selector extends System {
   onMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     if (e.button !== 0) return;
 
-    const clickPosition = { x: e.clientX, y: e.clientY }
+    const clickPosition = new Vector2(e.clientX, e.clientY).subtractMut(this.cameraOffset())
     this.selectCircles(clickPosition)
   };
 
-  selectCircles = (clickPosition: { x: number, y: number }) => {
+  selectCircles = (clickPosition: Vector2) => {
     this.deselectAllCircles()
 
     this.queries.circles.results.forEach(entity => {
@@ -34,9 +36,15 @@ class Selector extends System {
       entity.getMutableComponent(Selectable).selected = false
     })
   }
+
+  private cameraOffset = () => {
+    const camera = this.queries.cameras.results[0]
+    return camera.getComponent(Position).position
+  }
 }
 
 Selector.queries = {
+  cameras: { components: [Camera, Position] },
   circles: { components: [Circle, Position, Selectable] }
 }
 

@@ -4,6 +4,7 @@ import Vector2 from "../types/Vector2";
 import RectangleSelection from "../components/RectangleSelection";
 import positionsAreClose from "../utils/positionsAreClose";
 import Position from "../components/Position";
+import Camera from "../components/Camera";
 
 class RectangleSelector extends System {
   execute(_delta: number, _time: number): void { }
@@ -12,8 +13,8 @@ class RectangleSelector extends System {
     if (e.button !== 0) return;
     if (this.queries.rectangleSelections.results.length > 0) return;
 
-    const startPosition = new Vector2(e.clientX, e.clientY)
-    const endPosition = new Vector2(e.clientX, e.clientY)
+    const startPosition = new Vector2(e.clientX, e.clientY).subtractMut(this.cameraOffset())
+    const endPosition = new Vector2(e.clientX, e.clientY).subtractMut(this.cameraOffset())
 
     this.world.createEntity()
       .addComponent(RectangleSelection, { startPosition, endPosition })
@@ -29,7 +30,7 @@ class RectangleSelector extends System {
         return;
       }
 
-      entity.getMutableComponent(RectangleSelection).endPosition.set(clientX, clientY)
+      entity.getMutableComponent(RectangleSelection).endPosition.set(clientX, clientY).subtractMut(this.cameraOffset())
     })
   }
 
@@ -56,9 +57,15 @@ class RectangleSelector extends System {
       })
     })
   }
+
+  private cameraOffset = () => {
+    const camera = this.queries.cameras.results[0]
+    return camera.getComponent(Position).position
+  }
 }
 
 RectangleSelector.queries = {
+  cameras: { components: [Camera, Position] },
   selectables: { components: [Position, Selectable] },
   rectangleSelections: { components: [RectangleSelection] },
 }
