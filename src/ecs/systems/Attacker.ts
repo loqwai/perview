@@ -9,8 +9,6 @@ import DestroyedOnImpact from "../components/DestroyedOnImpact";
 import Lifespan from "../components/Lifespan";
 import DoesDamage from "../components/DoesDamage";
 import Position from "../components/Position";
-import DebugVector from "../components/DebugVector";
-import Vector2 from "../types/Vector2";
 
 class Attacker extends System {
   execute(_delta: number, time: number): void {
@@ -58,14 +56,6 @@ class Attacker extends System {
   private isObstructed = (attacker: Entity, target: Entity, teammates: Entity[]) => {
     const others = R.without([attacker], teammates)
     return R.any(this.inTheWayOfTarget(attacker)(target), others)
-  }
-
-  private dv = (position: Vector2, direction: Vector2, color: string) => {
-    this.world.createEntity().addComponent(DebugVector, {
-      color,
-      position,
-      direction,
-    })
   }
 
   private inTheWayOfTarget = R.curry((attacker: Entity, target: Entity, other: Entity) => {

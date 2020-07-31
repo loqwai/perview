@@ -31,7 +31,7 @@ class Boidser extends System {
              .limitMut(maxSpeed)
 
     this.world.createEntity()
-              .addComponent(DebugVector, { color: '#f00', position, direction })
+              .addComponent(DebugVector, { color: 'rgba(255, 0, 0, 0.5)', position, direction })
 
     if (Number.isNaN(direction.x) || Number.isNaN(direction.y)) {
       throw new Error('divided.x was NaN');
