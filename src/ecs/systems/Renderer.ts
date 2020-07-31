@@ -97,7 +97,7 @@ class Renderer extends System {
     const ctx = this.ctx;
     if (!ctx) return;
 
-    const { position } = entity.getComponent(Position);
+    const position = entity.getComponent(Position).position.add(this.cameraOffset());
     const { health, maxHealth } = entity.getComponent(Health);
 
     const x = position.x - 10
@@ -120,7 +120,9 @@ class Renderer extends System {
     if (!this.ctx) return;
 
     const ctx = this.ctx
-    const { startPosition, endPosition } = entity.getComponent(RectangleSelection)
+    const rectangleSelection = entity.getComponent(RectangleSelection)
+    const startPosition = rectangleSelection.startPosition.add(this.cameraOffset())
+    const endPosition = rectangleSelection.endPosition.add(this.cameraOffset())
 
     if (positionsAreClose(startPosition, endPosition, 5)) return;
 
@@ -137,13 +139,14 @@ class Renderer extends System {
   private renderVector = ({ position, direction, color }: { position: Vector2, direction: Vector2, color: string }) => {
     if (!this.ctx) return;
 
-    const { x, y } = position.add(direction)
+    const offsetPosition = position.add(this.cameraOffset())
+    const { x, y } = offsetPosition.add(direction)
 
     const ctx = this.ctx
     ctx.lineWidth = 2
     ctx.strokeStyle = color
     ctx.beginPath()
-    ctx.moveTo(position.x, position.y)
+    ctx.moveTo(offsetPosition.x, offsetPosition.y)
     ctx.lineTo(x, y)
     ctx.stroke()
   }

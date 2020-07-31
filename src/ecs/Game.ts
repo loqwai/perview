@@ -28,6 +28,7 @@ import Vector2 from './types/Vector2';
 import Camera from './components/Camera';
 import VectorDebugger from './systems/VectorDebugger';
 import VectorDebugState from './components/VectorDebugState';
+import CameraPanner from './systems/CameraPanner';
 
 
 
@@ -51,6 +52,7 @@ class Game {
     this.world = new World()
       .registerSystem(Attacker)
       .registerSystem(Boidser)
+      .registerSystem(CameraPanner)
       .registerSystem(DestinationSetter)
       .registerSystem(EnforceLifespan)
       .registerSystem(EnforceHealth)
@@ -97,10 +99,11 @@ class Game {
 
   onKeyDown = (e: KeyboardEvent) => {
     this.vectorDebugger().onKeyDown(e)
+    this.cameraPanner().onKeyDown(e)
   }
 
   onKeyUp = (e: KeyboardEvent) => {
-    console.log('onKeyUp', e)
+    this.cameraPanner().onKeyUp(e)
   }
 
   onMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
@@ -186,6 +189,7 @@ class Game {
     this.animationFrameRequest = requestAnimationFrame(this.run)
   }
 
+  private cameraPanner = () => this.world.getSystem(CameraPanner) as CameraPanner
   private destinationSetter = () => this.world.getSystem(DestinationSetter) as DestinationSetter
   private rectangleSelector = () => this.world.getSystem(RectangleSelector) as RectangleSelector
   private renderer = () => this.world.getSystem(Renderer) as Renderer
