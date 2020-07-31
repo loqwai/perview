@@ -25,6 +25,9 @@ import Renderer from './systems/Renderer';
 import Selector from './systems/Selector';
 import Stopper from './systems/Stopper';
 import Vector2 from './types/Vector2';
+import Camera from './components/Camera';
+import VectorDebugger from './systems/VectorDebugger';
+import VectorDebugState from './components/VectorDebugState';
 
 
 
@@ -56,7 +59,9 @@ class Game {
       .registerSystem(Renderer, { canvas, colors })
       .registerSystem(Selector)
       .registerSystem(Stopper)
+      .registerSystem(VectorDebugger)
       .registerComponent(Attack)
+      .registerComponent(Camera)
       .registerComponent(Circle)
       .registerComponent(Collidable)
       .registerComponent(Debug)
@@ -71,9 +76,12 @@ class Game {
       .registerComponent(RectangleSelection)
       .registerComponent(Selectable)
       .registerComponent(Team)
+      .registerComponent(VectorDebugState)
   }
 
   start = () => {
+    this.createCamera()
+    this.createVectorDebugState()
     for (let i = 0; i < 10; i++) {
       this.createFriendly(50 + 50 * i, 500)
       this.createEnemy(50 + 50 * i, 100)
@@ -81,7 +89,37 @@ class Game {
     this.run();
   }
 
-  createEnemy = (x: number, y: number) => {
+  stop = () => {
+    if (!this.animationFrameRequest) return
+
+    cancelAnimationFrame(this.animationFrameRequest)
+  }
+
+  onKeyDown = (e: KeyboardEvent) => {
+    this.vectorDebugger().onKeyDown(e)
+  }
+
+  onKeyUp = (e: KeyboardEvent) => {
+    console.log('onKeyUp', e)
+  }
+
+  onMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+    this.destinationSetter().onMouseDown(e)
+    this.selector().onMouseDown(e)
+    this.rectangleSelector().onMouseDown(e)
+  }
+
+  onMouseMove = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => this.rectangleSelector().onMouseMove(e)
+  onMouseUp = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => this.rectangleSelector().onMouseUp(e)
+
+
+  private createCamera = () => {
+    this.world.createEntity()
+              .addComponent(Camera)
+              .addComponent(Position, {position: new Vector2(0, 0)})
+  }
+
+  private createEnemy = (x: number, y: number) => {
     const teamName = "Enemy"
     const radius = 10;
     const color = colors.enemy
@@ -103,7 +141,7 @@ class Game {
       .addComponent(Team, { name: teamName })
   }
 
-  createFriendly = (x: number, y: number) => {
+  private createFriendly = (x: number, y: number) => {
     const teamName = "Friendly"
     const color = colors.friendly
     const radius = 10;
@@ -132,22 +170,9 @@ class Game {
       .addComponent(Team, { name: teamName })
   }
 
-  stop = () => {
-    if (!this.animationFrameRequest) return
-
-    cancelAnimationFrame(this.animationFrameRequest)
+  private createVectorDebugState = () => {
+    this.world.createEntity().addComponent(VectorDebugState)
   }
-
-  toggleVectorDebug = () => this.renderer().toggleVectorDebug()
-
-  onMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    this.destinationSetter().onMouseDown(e)
-    this.selector().onMouseDown(e)
-    this.rectangleSelector().onMouseDown(e)
-  }
-
-  onMouseMove = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => this.rectangleSelector().onMouseMove(e)
-  onMouseUp = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => this.rectangleSelector().onMouseUp(e)
 
   private run = () => {
     // Compute delta and elapsed time
@@ -165,6 +190,7 @@ class Game {
   private rectangleSelector = () => this.world.getSystem(RectangleSelector) as RectangleSelector
   private renderer = () => this.world.getSystem(Renderer) as Renderer
   private selector = () => this.world.getSystem(Selector) as Selector
+  private vectorDebugger = () => this.world.getSystem(VectorDebugger) as VectorDebugger
 }
 
 export default Game

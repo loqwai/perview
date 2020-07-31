@@ -84,7 +84,7 @@ class Boidser extends System {
 
     const { position } = entity.getComponent(Position)
     forces.forEach(force => {
-      this.world.createEntity().addComponent(DebugVector, { color: '#0f0', position, direction: force})
+      this.world.createEntity().addComponent(DebugVector, { color: 'rgba(0, 255, 0, 0.05)', position, direction: force})
     })
 
 

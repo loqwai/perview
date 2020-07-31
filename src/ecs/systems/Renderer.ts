@@ -7,6 +7,8 @@ import Position from "../components/Position";
 import Health from "../components/Health";
 import DebugVector from "../components/DebugVector";
 import Vector2 from "../types/Vector2";
+import Camera from "../components/Camera";
+import VectorDebugState from "../components/VectorDebugState";
 
 interface Colors {
   background: string;
@@ -24,17 +26,14 @@ class Renderer extends System {
   private colors: Colors;
   private ctx: CanvasRenderingContext2D | null;
 
-  private debug: boolean;
-
   constructor(world: World, { canvas, colors, priority }: Attributes) {
     super(world, { priority })
     this.canvas = canvas
     this.colors = colors
     this.ctx = this.canvas.getContext('2d')
-    this.debug = false
   }
 
-  execute(delta: number, time: number): void {
+  execute(_delta: number, _time: number): void {
     this.clear()
     this.renderCircles()
     this.renderHealths()
@@ -47,15 +46,16 @@ class Renderer extends System {
   renderRectangleSelections = () => this.queries.rectangleSelections.results.forEach(this.renderRectangleSelection)
 
   renderDebugVectors() {
-    if (this.debug) {
-      this.queries.debugVectors.results.forEach(v => this.renderDebugVector)
+    if (this.vectorDebugEnabled()) {
+      this.queries.debugVectors.results.forEach(this.renderDebugVector)
     };
 
-    this.queries.debugVectors.results.forEach(e => e.remove())
+    this.queries.debugVectors.results.forEach(e => e.remove());
   }
 
-  toggleVectorDebug = () => {
-    this.debug = !this.debug
+  private cameraOffset = () => {
+    const camera = this.queries.cameras.results[0]
+    return camera.getComponent(Position).position
   }
 
   private clear = () => {
@@ -72,7 +72,7 @@ class Renderer extends System {
     const { color, radius } = entity.getComponent(Circle)
     const { position } = entity.getComponent(Position)
     const selected = entity.getComponent(Selectable)?.selected ?? false
-    const { x, y } = position
+    const { x, y } = position.add(this.cameraOffset())
 
     ctx.fillStyle = color
     ctx.beginPath()
@@ -147,13 +147,17 @@ class Renderer extends System {
     ctx.lineTo(x, y)
     ctx.stroke()
   }
+
+  private vectorDebugEnabled = () => this.queries.vectorDebugStates.results[0]?.getComponent(VectorDebugState).enabled
 }
 
 Renderer.queries = {
+  cameras: { components: [Camera, Position] },
   circles: { components: [Circle, Position] },
   debugVectors: { components: [DebugVector] },
   healths: { components: [Health, Position] },
   rectangleSelections: { components: [RectangleSelection] },
+  vectorDebugStates: { components: [VectorDebugState] },
 }
 
 export default Renderer

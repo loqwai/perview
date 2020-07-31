@@ -39,15 +39,14 @@ const App = () => {
     gameRef.current?.onMouseDown(e)
   }
 
-  const onMouseMove: MouseEventHandler<HTMLCanvasElement> = (e) => {
-    gameRef.current?.onMouseMove(e)
-  }
+  const onMouseMove: MouseEventHandler<HTMLCanvasElement> = (e) => gameRef.current?.onMouseMove(e)
+  const onMouseUp: MouseEventHandler<HTMLCanvasElement> = (e) => gameRef.current?.onMouseUp(e)
 
-  const onMouseUp: MouseEventHandler<HTMLCanvasElement> = (e) => {
-    gameRef.current?.onMouseUp(e)
-  }
-
-  useKeyPressEvent('v', () => gameRef.current?.toggleVectorDebug())
+  useKeyPressEvent(
+    () => true,
+    (e) => gameRef.current?.onKeyDown(e),
+    (e) => gameRef.current?.onKeyUp(e),
+  )
 
   return (
     <div className="App">
