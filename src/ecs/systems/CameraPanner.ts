@@ -11,15 +11,17 @@ class CameraPanner extends System {
     left: false,
   }
 
-  execute(delta: number, time: number): void {
+  execute(delta: number, _time: number): void {
     const camera = this.queries.cameras.results[0]
-
+    const { panSpeed } = camera.getMutableComponent(Camera)
     const { position } = camera.getMutableComponent(Position)
 
-    if (this.panning.up) position.addMut(new Vector2(0, 1))
-    if (this.panning.right) position.addMut(new Vector2(-1, 0))
-    if (this.panning.down) position.addMut(new Vector2(0, -1))
-    if (this.panning.left) position.addMut(new Vector2(1, 0))
+    const direction = new Vector2(
+      (this.panning.left ? 1 : 0) + (this.panning.right ? -1 : 0),
+      (this.panning.up ? 1 : 0) + (this.panning.down ? -1 : 0)
+    ).multiplyScalarMut(panSpeed * delta / 1000)
+
+    position.addMut(direction)
   }
 
   onKeyDown = (e: KeyboardEvent) => {

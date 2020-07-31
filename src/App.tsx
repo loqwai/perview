@@ -1,5 +1,5 @@
 import React, { MouseEventHandler } from 'react';
-import { useKeyPressEvent } from 'react-use'
+import { useKey } from 'react-use'
 
 import Game from './ecs/Game'
 import './App.css';
@@ -42,10 +42,16 @@ const App = () => {
   const onMouseMove: MouseEventHandler<HTMLCanvasElement> = (e) => gameRef.current?.onMouseMove(e)
   const onMouseUp: MouseEventHandler<HTMLCanvasElement> = (e) => gameRef.current?.onMouseUp(e)
 
-  useKeyPressEvent(
+  useKey(
     () => true,
     (e) => gameRef.current?.onKeyDown(e),
+    {event: 'keydown'}
+  )
+
+  useKey(
+    () => true,
     (e) => gameRef.current?.onKeyUp(e),
+    {event: 'keyup'}
   )
 
   return (

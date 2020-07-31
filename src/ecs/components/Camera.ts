@@ -1,7 +1,11 @@
-import { Component } from "ecsy";
+import { Component, Types } from "ecsy";
 
-class Camera extends Component<Camera> {}
+class Camera extends Component<Camera> {
+  panSpeed: number = 0;
+}
 
-Camera.schema = {}
+Camera.schema = {
+  panSpeed: { type: Types.Number },
+}
 
 export default Camera

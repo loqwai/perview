@@ -118,8 +118,8 @@ class Game {
 
   private createCamera = () => {
     this.world.createEntity()
-              .addComponent(Camera)
-              .addComponent(Position, {position: new Vector2(0, 0)})
+              .addComponent(Camera, { panSpeed: 500 })
+              .addComponent(Position, { position: new Vector2(0, 0) })
   }
 
   private createEnemy = (x: number, y: number) => {
