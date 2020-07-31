@@ -1,33 +1,33 @@
-import { World } from 'ecsy'
+import { World } from 'ecsy';
+import Attack from './components/Attack';
+import Circle from './components/Circle';
+import Collidable from './components/Collidable';
+import Debug from './components/Debug';
+import DebugVector from './components/DebugVector';
+import Destination from './components/Destination';
+import DestroyedOnImpact from './components/DestroyedOnImpact';
+import DoesDamage from './components/DoesDamage';
+import Health from './components/Health';
+import Lifespan from './components/Lifespan';
+import Moveable from './components/Moveable';
+import Position from './components/Position';
+import RectangleSelection from './components/RectangleSelection';
+import Selectable from './components/Selectable';
+import Team from './components/Team';
+import Attacker from './systems/Attacker';
+import Boidser from './systems/Boidser';
+import DestinationSetter from './systems/DestinationSetter';
+import EnforceHealth from './systems/EnforceHealth';
+import EnforceLifespan from './systems/EnforceLifespan';
+import Mover from './systems/Mover';
+import RectangleSelector from './systems/RectangleSelector';
+import Renderer from './systems/Renderer';
+import Selector from './systems/Selector';
+import Stopper from './systems/Stopper';
+import Vector2 from './types/Vector2';
 
-import Vector2 from './types/Vector2'
 
-import Attack from './components/Attack'
-import Circle from './components/Circle'
-import Collidable from './components/Collidable'
-import Destination from './components/Destination'
-import DestroyedOnImpact from './components/DestroyedOnImpact'
-import Lifespan from './components/Lifespan'
-import Moveable from './components/Moveable'
-import RectangleSelection from './components/RectangleSelection'
-import Selectable from './components/Selectable'
-import Team from './components/Team'
 
-import Attacker from './systems/Attacker'
-import RectangleSelector from './systems/RectangleSelector'
-import Renderer from './systems/Renderer'
-import Selector from './systems/Selector'
-import Stopper from './systems/Stopper'
-import EnforceLifespan from './systems/EnforceLifespan'
-import Health from './components/Health'
-import EnforceHealth from './systems/EnforceHealth'
-import DoesDamage from './components/DoesDamage'
-import Position from './components/Position'
-import Boidser from './systems/Boidser'
-import Debug from './components/Debug'
-import DestinationSetter from './systems/DestinationSetter'
-import Mover from './systems/Mover'
-import DebugVector from './components/DebugVector'
 
 const colors = {
   friendly: '#59cd90',
@@ -42,7 +42,7 @@ class Game {
   private lastTime: number
   private animationFrameRequest: number | null
 
-  constructor({ canvas }: {canvas: HTMLCanvasElement}) {
+  constructor({ canvas }: { canvas: HTMLCanvasElement }) {
     this.lastTime = performance.now()
     this.animationFrameRequest = null
     this.world = new World()
@@ -138,42 +138,33 @@ class Game {
     cancelAnimationFrame(this.animationFrameRequest)
   }
 
-  toggleDebug = () => {
-    const renderer = this.world.getSystem(Renderer) as Renderer
-    renderer.toggleDebug()
-  }
+  toggleVectorDebug = () => this.renderer().toggleVectorDebug()
 
   onMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    const destionationSetter = this.world.getSystem(DestinationSetter) as DestinationSetter
-    const selector = this.world.getSystem(Selector) as Selector
-    const rectangleSelector = this.world.getSystem(RectangleSelector) as RectangleSelector
-
-    destionationSetter.onMouseDown(e)
-    selector.onMouseDown(e)
-    rectangleSelector.onMouseDown(e)
+    this.destinationSetter().onMouseDown(e)
+    this.selector().onMouseDown(e)
+    this.rectangleSelector().onMouseDown(e)
   }
 
-  onMouseMove = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    const rectangleSelector = this.world.getSystem(RectangleSelector) as RectangleSelector
-    rectangleSelector.onMouseMove(e)
+  onMouseMove = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => this.rectangleSelector().onMouseMove(e)
+  onMouseUp = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => this.rectangleSelector().onMouseUp(e)
+
+  private run = () => {
+    // Compute delta and elapsed time
+    const time = performance.now()
+    const delta = time - this.lastTime
+
+    // Run all the systems
+    this.world.execute(delta, time)
+
+    this.lastTime = time
+    this.animationFrameRequest = requestAnimationFrame(this.run)
   }
 
-  onMouseUp = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    const rectangleSelector = this.world.getSystem(RectangleSelector) as RectangleSelector
-    rectangleSelector.onMouseUp(e)
-  }
-
-  private run =  () => {
-     // Compute delta and elapsed time
-     const time = performance.now()
-     const delta = time - this.lastTime
-
-     // Run all the systems
-     this.world.execute(delta, time)
-
-     this.lastTime = time
-     this.animationFrameRequest = requestAnimationFrame(this.run)
-  }
+  private destinationSetter = () => this.world.getSystem(DestinationSetter) as DestinationSetter
+  private rectangleSelector = () => this.world.getSystem(RectangleSelector) as RectangleSelector
+  private renderer = () => this.world.getSystem(Renderer) as Renderer
+  private selector = () => this.world.getSystem(Selector) as Selector
 }
 
 export default Game

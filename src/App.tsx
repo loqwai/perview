@@ -47,7 +47,7 @@ const App = () => {
     gameRef.current?.onMouseUp(e)
   }
 
-  useKeyPressEvent('d', () => gameRef.current?.toggleDebug())
+  useKeyPressEvent('v', () => gameRef.current?.toggleVectorDebug())
 
   return (
     <div className="App">

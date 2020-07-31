@@ -36,14 +36,25 @@ class Renderer extends System {
 
   execute(delta: number, time: number): void {
     this.clear()
-    this.queries.circles.results.forEach(this.drawCircle)
-    this.queries.healths.results.forEach(this.drawHealth)
-    this.queries.rectangleSelections.results.forEach(this.drawRectangleSelection)
-    this.queries.debugVectors.results.forEach(this.drawDebugVector)
+    this.renderCircles()
+    this.renderHealths()
+    this.renderRectangleSelections()
+    this.renderDebugVectors()
+  }
+
+  renderCircles = () => this.queries.circles.results.forEach(this.renderCircle)
+  renderHealths = () => this.queries.healths.results.forEach(this.renderHealth)
+  renderRectangleSelections = () => this.queries.rectangleSelections.results.forEach(this.renderRectangleSelection)
+
+  renderDebugVectors() {
+    if (this.debug) {
+      this.queries.debugVectors.results.forEach(v => this.renderDebugVector)
+    };
+
     this.queries.debugVectors.results.forEach(e => e.remove())
   }
 
-  toggleDebug = () => {
+  toggleVectorDebug = () => {
     this.debug = !this.debug
   }
 
@@ -54,7 +65,7 @@ class Renderer extends System {
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  private drawCircle = (entity: Entity) => {
+  private renderCircle = (entity: Entity) => {
     if (!this.ctx) return
 
     const ctx = this.ctx
@@ -80,12 +91,9 @@ class Renderer extends System {
     }
   }
 
-  private drawDebugVector = (entity: Entity) => {
-    if (!this.debug) return;
-    this.drawVector(entity.getComponent(DebugVector))
-  }
+  private renderDebugVector = (entity: Entity) => this.renderVector(entity.getComponent(DebugVector))
 
-  private drawHealth = (entity: Entity) => {
+  private renderHealth = (entity: Entity) => {
     const ctx = this.ctx;
     if (!ctx) return;
 
@@ -108,7 +116,7 @@ class Renderer extends System {
     ctx.fillRect(x, y, wHealth, h)
   }
 
-  private drawRectangleSelection = (entity: Entity) => {
+  private renderRectangleSelection = (entity: Entity) => {
     if (!this.ctx) return;
 
     const ctx = this.ctx
@@ -125,7 +133,8 @@ class Renderer extends System {
     ctx.strokeRect(x, y, w, h)
   }
 
-  private drawVector = ({ position, direction, color }: { position: Vector2, direction: Vector2, color: string }) => {
+
+  private renderVector = ({ position, direction, color }: { position: Vector2, direction: Vector2, color: string }) => {
     if (!this.ctx) return;
 
     const { x, y } = position.add(direction)
