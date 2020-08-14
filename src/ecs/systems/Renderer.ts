@@ -9,6 +9,7 @@ import DebugVector from "../components/DebugVector";
 import Vector2 from "../types/Vector2";
 import Camera from "../components/Camera";
 import VectorDebugState from "../components/VectorDebugState";
+import Attack from "../components/Attack";
 
 interface Colors {
   background: string;
@@ -38,11 +39,13 @@ class Renderer extends System {
     this.renderCircles()
     this.renderHealths()
     this.renderRectangleSelections()
+    this.renderStrengths()
     this.renderDebugVectors()
   }
 
   renderCircles = () => this.queries.circles.results.forEach(this.renderCircle)
   renderHealths = () => this.queries.healths.results.forEach(this.renderHealth)
+  renderStrengths = () => this.queries.strengths.results.forEach(this.renderStrength)
   renderRectangleSelections = () => this.queries.rectangleSelections.results.forEach(this.renderRectangleSelection)
 
   renderDebugVectors() {
@@ -142,6 +145,30 @@ class Renderer extends System {
     ctx.strokeRect(x, y, w, h)
   }
 
+  private renderStrength = (entity: Entity) => {
+    const ctx = this.ctx;
+    if (!ctx) return;
+
+    const offset = this.cameraOffset()
+    const scale = this.cameraScale()
+    const { position } = entity.getComponent(Position);
+    const { projectileDamage, projectileDamageOriginal } = entity.getComponent(Attack);
+
+    const { x, y } = position.add(new Vector2(-10, 20)).addMut(offset).multiplyScalarMut(scale)
+    const w = 20 * scale
+    const h = 4 * scale
+
+    const wHealth = w * projectileDamage / (projectileDamageOriginal * 10)
+
+    ctx.lineWidth = 2 * scale
+    ctx.strokeStyle = '#222'
+    ctx.strokeRect(x, y, w, h)
+
+    ctx.lineWidth = 0
+    ctx.fillStyle = '#c73e1d';
+    ctx.fillRect(x, y, wHealth, h)
+  }
+
 
   private renderVector = ({ position, direction, color }: { position: Vector2, direction: Vector2, color: string }) => {
     if (!this.ctx) return;
@@ -168,6 +195,7 @@ Renderer.queries = {
   circles: { components: [Circle, Position] },
   debugVectors: { components: [DebugVector] },
   healths: { components: [Health, Position] },
+  strengths: { components: [Attack, Position] },
   rectangleSelections: { components: [RectangleSelection] },
   vectorDebugStates: { components: [VectorDebugState] },
 }
