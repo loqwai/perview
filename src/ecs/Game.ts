@@ -30,6 +30,7 @@ import VectorDebugger from './systems/VectorDebugger';
 import VectorDebugState from './components/VectorDebugState';
 import CameraPanner from './systems/CameraPanner';
 import CameraZoomer from './systems/CameraZoomer';
+import ZoomStrengthModifier from './systems/ZoomStrengthModifier';
 
 
 
@@ -66,6 +67,7 @@ class Game {
       .registerSystem(Selector)
       .registerSystem(Stopper)
       .registerSystem(VectorDebugger)
+      .registerSystem(ZoomStrengthModifier)
       .registerComponent(Attack)
       .registerComponent(Camera)
       .registerComponent(Circle)
@@ -130,6 +132,7 @@ class Game {
     this.world.createEntity()
               .addComponent(Camera, { panSpeed: 500, zoomSpeed: 0.01, zoom: 1, width, height })
               .addComponent(Position, { position: new Vector2(0, 0) })
+              .addComponent(Team, { name: 'Friendly' })
   }
 
   private createEnemy = (x: number, y: number) => {
@@ -143,10 +146,11 @@ class Game {
     const projectileSpeed = 200;
     const projectileLifetime = 1800;
     const projectileDamage = 10;
+    const projectileDamageOriginal = 10;
     const minimumRefactoryPeriod = 500;
 
     this.world.createEntity()
-      .addComponent(Attack, { projectileColor, projectileSpeed, projectileLifetime, projectileDamage, minimumRefactoryPeriod })
+      .addComponent(Attack, { projectileColor, projectileSpeed, projectileLifetime, projectileDamage, projectileDamageOriginal, minimumRefactoryPeriod })
       .addComponent(Circle, { radius, color })
       .addComponent(Collidable)
       .addComponent(Health, { health, maxHealth: health })
@@ -170,10 +174,11 @@ class Game {
     const projectileSpeed = 200;
     const projectileLifetime = 1800;
     const projectileDamage = 10;
+    const projectileDamageOriginal = 10;
     const minimumRefactoryPeriod = 500;
 
     this.world.createEntity()
-      .addComponent(Attack, { projectileColor, projectileSpeed, projectileLifetime, projectileDamage, minimumRefactoryPeriod })
+      .addComponent(Attack, { projectileColor, projectileSpeed, projectileLifetime, projectileDamage, projectileDamageOriginal, minimumRefactoryPeriod })
       .addComponent(Circle, { radius, color })
       .addComponent(Collidable)
       .addComponent(Health, { health, maxHealth: health })

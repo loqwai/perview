@@ -5,7 +5,8 @@ class Attack extends Component<Attack> {
   projectileSpeed: number = 0;
   projectileLifetime: number = 0;
   projectileDamage: number = 0;
-  minimumRefactoryPeriod: number = 0; 
+  projectileDamageOriginal: number = 0;
+  minimumRefactoryPeriod: number = 0;
   lastAttack: number = 0;
 }
 
@@ -14,6 +15,7 @@ Attack.schema = {
   projectileSpeed: { type: Types.Number },
   projectileLifetime: { type: Types.Number },
   projectileDamage: { type: Types.Number },
+  projectileDamageOriginal: { type: Types.Number },
   minimumRefactoryPeriod: { type: Types.Number },
   lastAttack: { type: Types.Number },
 }
