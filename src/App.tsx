@@ -3,6 +3,7 @@ import { useKey, useWindowSize, useEvent } from 'react-use'
 
 import Game from './ecs/Game'
 import './App.css';
+import useWebRtc from './hooks/useWebRtc';
 
 const App = () => {
   const [canvas, setCanvas] = React.useState<HTMLCanvasElement | null>(null);
@@ -19,6 +20,8 @@ const App = () => {
       gameRef.current = null
     }
   }, [canvas])
+
+  const [initiate, receive] = useWebRtc()
 
   const { width, height } = useWindowSize()
 
@@ -57,6 +60,8 @@ const App = () => {
 
   return (
     <div className="App">
+      <button onClick={initiate}>Initiate</button>
+      <button onClick={receive}>Receive</button>
       <canvas
         ref={setCanvas}
         onMouseDown={onMouseDown}
