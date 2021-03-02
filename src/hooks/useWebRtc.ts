@@ -13,16 +13,27 @@ const initiate = async () => {
       console.log('initiate(conn(open))')
       conn.send('hi')
     })
+    conn.on('data', data => {
+      console.log('initiate(conn(data))', id, data)
+    })
   })
 }
 
 const receive = async () => {
+  const conns: Peer.DataConnection[] = []
+
   console.log('starting up receiver with id', peerId)
   const peer = new Peer(peerId);
   peer.on('connection', conn => {
     console.log('receive(connection)')
+    conns.push(conn)
+
     conn.on('data', data => {
       console.log('receive(data)', data)
+
+      for (const c of conns) {
+        c.send('hi back!')
+      }
     })
   })
 }
